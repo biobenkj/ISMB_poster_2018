@@ -1,0 +1,247 @@
+---
+title: "ISMB_poster_VARI_2018"
+author: "Ben Johnson"
+date: "6/23/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r loadlibs}
+
+library(GEOquery)
+library(sesame)
+library(plyr)
+library(dplyr)
+library(tidyr)
+
+```
+
+
+```{r loadsamplesheet}
+
+#Load in the pre-downloaded sample sheet from GEO
+load("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/geo_data/sample_sheet.RData")
+
+#Load extra information
+extra_samp_info <- read.delim("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/geo_data/GSE87571_additional_sample_chararcteristics.txt", header = T, stringsAsFactors = F, check.names = F) 
+colnames(extra_samp_info) <- gsub("characteristics: ", "", colnames(extra_samp_info))
+
+```
+
+```{r parsesamplesheet}
+
+#Parse out phenotypic data from sample sheet
+samp_info.pd <- data.frame(Sample_Name = samp_sheet$GSE87571_series_matrix.txt.gz@phenoData@data$geo_accession,
+                           Sample_ID = samp_sheet$GSE87571_series_matrix.txt.gz@phenoData@data$geo_accession,
+                           Sample_Well = NA,
+                           Sample_Plate = "MSA4",
+                           Age = samp_sheet$GSE87571_series_matrix.txt.gz@phenoData@data$`age:ch1`,
+                           Sex = samp_sheet$GSE87571_series_matrix.txt.gz@phenoData@data$`gender:ch1`,
+                           Disease_Stage = samp_sheet$GSE87571_series_matrix.txt.gz@phenoData@data$`disease state:ch1`,
+                           Tissue = samp_sheet$GSE87571_series_matrix.txt.gz@phenoData@data$`tissue:ch1`)
+
+#Parse out phenotypic data from extra information
+extra_samp_info.pd <- extra_samp_info %>% select(`geo accession`, Sample_Group, Slide, year_of_collection, smoke) %>% rename(Sample_ID = `geo accession`)
+
+#Join up the metadata
+samp_info.pd <- plyr::join(samp_info.pd, extra_samp_info.pd, by = "Sample_ID")
+
+#Order by sample name
+samp_info.pd <- samp_info.pd[order(samp_info.pd$Sample_Name),]
+
+```
+
+```{r preprocessidats}
+
+#Preprocess idats with sesame
+#This needs to be done in chunks of 100 files due to memory limitations
+#TODO: write this in a loop to pre-process things for publication
+
+#Chunk1
+ssets <- lapply(searchIDATprefixes("~/Desktop/chnk1"), readIDATpair, verbose = T)
+
+betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
+
+chnk1 <- ldply(betas, "rbind")
+save(chnk1, file = "~/Desktop/ISMB_chnk1.RData")
+
+#Chunk2
+ssets <- lapply(searchIDATprefixes("~/Desktop/chnk2"), readIDATpair, verbose = T)
+
+betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
+
+chnk2 <- ldply(betas, "rbind")
+save(chnk2, file = "~/Desktop/ISMB_chnk2.RData")
+
+#Chunk3
+ssets <- lapply(searchIDATprefixes("~/Desktop/chnk3"), readIDATpair, verbose = T)
+
+betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
+
+chnk3 <- ldply(betas, "rbind")
+save(chnk3, file = "~/Desktop/ISMB_chnk3.RData")
+remove(chnk3)
+
+#Chunk4
+ssets <- lapply(searchIDATprefixes("~/Desktop/chnk4"), readIDATpair, verbose = T)
+
+betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
+
+chnk4 <- ldply(betas, "rbind")
+save(chnk4, file = "~/Desktop/ISMB_chnk4.RData")
+remove(chnk4)
+
+#Chunk5
+ssets <- lapply(searchIDATprefixes("~/Desktop/chnk5"), readIDATpair, verbose = T)
+
+betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
+
+chnk5 <- ldply(betas, "rbind")
+save(chnk5, file = "~/Desktop/ISMB_chnk5.RData")
+remove(chnk5)
+
+#Chunk6
+ssets <- lapply(searchIDATprefixes("~/Desktop/chnk6"), readIDATpair, verbose = T)
+
+betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
+
+chnk6 <- ldply(betas, "rbind")
+save(chnk6, file = "~/Desktop/ISMB_chnk6.RData")
+remove(chnk6)
+
+#Chunk7
+ssets <- lapply(searchIDATprefixes("~/Desktop/chnk7"), readIDATpair, verbose = T)
+
+betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
+
+chnk7 <- ldply(betas, "rbind")
+save(chnk7, file = "~/Desktop/ISMB_chnk7.RData")
+remove(chnk7)
+
+#Chunk8
+ssets <- lapply(searchIDATprefixes("~/Desktop/chnk8"), readIDATpair, verbose = T)
+
+betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
+
+chnk8 <- ldply(betas, "rbind")
+save(chnk8, file = "~/Desktop/ISMB_chnk8.RData")
+remove(chnk8)
+
+```
+
+```{r getanno}
+
+#Pull the hg19 450k manifest from sesame
+manifest <- sesameDataGet("HM450.hg19.manifest")
+
+#Convert to a data frame to make filtering the probe matrix easier
+manifest.df <- as.data.frame(manifest)
+
+#Add a logical column for snp probes
+manifest.df$snp.probes <- as.logical(manifest.df$probeType == "rs")
+
+#Add a logical column for sex chromosome probes
+manifest.df$sex.probes <- as.logical(manifest.df$seqnames %in% c("chrX", "chrY"))
+
+#Order by probe name to line up with beta matrix
+manifest.df <- manifest.df[order(rownames(manifest.df)),]
+
+```
+
+```{r combinechnks}
+
+#Load in the chunks
+load("~/Desktop/ISMB_chnk1.RData")
+load("~/Desktop/ISMB_chnk2.RData")
+load("~/Desktop/ISMB_chnk3.RData")
+load("~/Desktop/ISMB_chnk4.RData")
+load("~/Desktop/ISMB_chnk5.RData")
+load("~/Desktop/ISMB_chnk6.RData")
+load("~/Desktop/ISMB_chnk7.RData")
+load("~/Desktop/ISMB_chnk8.RData")
+
+#Combine
+sesame_preprocess_betas <- rbind(chnk1, chnk2, chnk3, chnk4, chnk5, chnk6, chnk7, chnk8)
+
+#Process the ids and set to rownames
+sesame_preprocess_betas$.id <- gsub("^(?:[^/]*/){3}", "", sesame_preprocess_betas$.id) %>% gsub("\\_.*", "", .)
+rownames(sesame_preprocess_betas) <- sesame_preprocess_betas$.id
+
+#Drop the .id column
+sesame_preprocess_betas <- sesame_preprocess_betas[, -1]
+
+#Convert to a matrix
+sesame_preprocess_betas <- as.matrix(sesame_preprocess_betas)
+
+#Order the probe names
+sesame_preprocess_betas <- sesame_preprocess_betas[,order(colnames(sesame_preprocess_betas))]
+
+#Filter out SNP and sex probes
+colnames(sesame_preprocess_betas)[manifest.df$snp.probes] <- NA
+colnames(sesame_preprocess_betas)[manifest.df$sex.probes] <- NA
+sesame_preprocess_betas.filtered <- sesame_preprocess_betas[,!is.na(colnames(sesame_preprocess_betas))]
+
+#Filter out any completely masked probes
+allmask <- colSums(is.na(sesame_preprocess_betas.filtered)) != nrow(sesame_preprocess_betas.filtered)
+sesame_preprocess_betas.filtered <- sesame_preprocess_betas.filtered[,allmask]
+
+```
+
+```{r dmplimma}
+
+library(limma)
+library(minfi)
+
+#Convert filtered beta value matrix to M-values
+sesame_preprocess_betas.filtered.mval <- logit2(sesame_preprocess_betas.filtered)
+
+#Filter out the NA samples for age and sex
+#Note the need to use a string here instead of is.na which won't pick up the NA values since Age and Sex are factors
+samp_na <- !(samp_info.pd$Age == "NA")
+samp_info.pd <- samp_info.pd[samp_na,]
+sesame_preprocess_betas.filtered.mval <- sesame_preprocess_betas.filtered.mval[samp_na,]
+sesame_preprocess_betas.filtered <- sesame_preprocess_betas.filtered[samp_na,]
+
+#Create the design matrix
+
+#Model: methylation ~ age + sex + age*sex
+age <- as.character(samp_info.pd$Age) %>% as.numeric(.)
+sex <- factor(samp_info.pd$Sex)
+slide <- factor(samp_info.pd$Slide)
+design <- model.matrix(~age*sex)
+
+#Duplicate correlation for slide as a random effect?
+#Yes - given design2 results below
+#DupCor = 0.2151266
+dupcor <- duplicateCorrelation(t(sesame_preprocess_betas.filtered.mval), design, block = slide)
+
+#Model: methylation ~ age + sex + age*sex + slide
+#See if there is an association of slide with methylation or if including slide leads to better estimates of age effects
+#100k+ DMP for slide(s) - yeah it matters...
+#design2 <- model.matrix(~age + sex + age*sex + slide)
+
+#Limma on M-values with slide as a blocking factor and estimated correlation
+limma_fit.mval <- lmFit(t(sesame_preprocess_betas.filtered.mval), design, block = slide, correlation = dupcor$consensus)
+limma_fit_eb.mval <- eBayes(limma_fit.mval)
+
+#Summary of significant probes
+summary(decideTests(limma_fit_eb.mval))
+
+#Limma on B-values
+limma_fit.bval <- lmFit(t(sesame_preprocess_betas.filtered), design)
+limma_fit_eb.bval <- eBayes(limma_fit.bval)
+
+#Summary of significant probes
+summary(decideTests(limma_fit_eb.bval))
+
+```
+
+```{r betareg}
+
+#Repeat Triche et. al 2015 betareg results of increased sensitivity
+library(betareg)
+
+```
