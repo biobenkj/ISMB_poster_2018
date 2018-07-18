@@ -44,13 +44,16 @@ samp_info.pd <- data.frame(Sample_Name = samp_sheet$GSE87571_series_matrix.txt.g
                            Tissue = samp_sheet$GSE87571_series_matrix.txt.gz@phenoData@data$`tissue:ch1`)
 
 #Parse out phenotypic data from extra information
-extra_samp_info.pd <- extra_samp_info %>% select(`geo accession`, Sample_Group, Slide, year_of_collection, smoke) %>% rename(Sample_ID = `geo accession`)
+extra_samp_info.pd <- extra_samp_info %>% select(`geo accession`, Sample_Group, Slide, year_of_collection, smoke, CD8T, CD4T, NK, Bcell, Mono, Gran) %>% rename(Sample_ID = `geo accession`)
 
 #Join up the metadata
 samp_info.pd <- plyr::join(samp_info.pd, extra_samp_info.pd, by = "Sample_ID")
 
 #Order by sample name
 samp_info.pd <- samp_info.pd[order(samp_info.pd$Sample_Name),]
+
+#Save the RData object
+save(samp_info.pd, file = "/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/geo_data/ISMB_samp_info.RData")
 
 ```
 
@@ -62,14 +65,24 @@ samp_info.pd <- samp_info.pd[order(samp_info.pd$Sample_Name),]
 
 #Chunk1
 ssets <- lapply(searchIDATprefixes("~/Desktop/chnk1"), readIDATpair, verbose = T)
+raw.betas <- lapply(ssets, function(x) getBetas(x, nondetection.mask = F, quality.mask = F))
+chnk1.raw <- ldply(raw.betas, "rbind")
+save(chnk1.raw, file = "~/Desktop/raw_betas_chnk1.RData")
+remove(chnk1.raw)
 
 betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
 
 chnk1 <- ldply(betas, "rbind")
+
 save(chnk1, file = "~/Desktop/ISMB_chnk1.RData")
+
 
 #Chunk2
 ssets <- lapply(searchIDATprefixes("~/Desktop/chnk2"), readIDATpair, verbose = T)
+raw.betas <- lapply(ssets, function(x) getBetas(x, nondetection.mask = F, quality.mask = F))
+chnk2.raw <- ldply(raw.betas, "rbind")
+save(chnk2.raw, file = "~/Desktop/raw_betas_chnk2.RData")
+remove(chnk2.raw)
 
 betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
 
@@ -78,6 +91,10 @@ save(chnk2, file = "~/Desktop/ISMB_chnk2.RData")
 
 #Chunk3
 ssets <- lapply(searchIDATprefixes("~/Desktop/chnk3"), readIDATpair, verbose = T)
+raw.betas <- lapply(ssets, function(x) getBetas(x, nondetection.mask = F, quality.mask = F))
+chnk3.raw <- ldply(raw.betas, "rbind")
+save(chnk3.raw, file = "~/Desktop/raw_betas_chnk3.RData")
+remove(chnk3.raw)
 
 betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
 
@@ -87,6 +104,10 @@ remove(chnk3)
 
 #Chunk4
 ssets <- lapply(searchIDATprefixes("~/Desktop/chnk4"), readIDATpair, verbose = T)
+raw.betas <- lapply(ssets, function(x) getBetas(x, nondetection.mask = F, quality.mask = F))
+chnk4.raw <- ldply(raw.betas, "rbind")
+save(chnk4.raw, file = "~/Desktop/raw_betas_chnk4.RData")
+remove(chnk4.raw)
 
 betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
 
@@ -96,6 +117,10 @@ remove(chnk4)
 
 #Chunk5
 ssets <- lapply(searchIDATprefixes("~/Desktop/chnk5"), readIDATpair, verbose = T)
+raw.betas <- lapply(ssets, function(x) getBetas(x, nondetection.mask = F, quality.mask = F))
+chnk5.raw <- ldply(raw.betas, "rbind")
+save(chnk5.raw, file = "~/Desktop/raw_betas_chnk5.RData")
+remove(chnk5.raw)
 
 betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
 
@@ -105,6 +130,10 @@ remove(chnk5)
 
 #Chunk6
 ssets <- lapply(searchIDATprefixes("~/Desktop/chnk6"), readIDATpair, verbose = T)
+raw.betas <- lapply(ssets, function(x) getBetas(x, nondetection.mask = F, quality.mask = F))
+chnk6.raw <- ldply(raw.betas, "rbind")
+save(chnk6.raw, file = "~/Desktop/raw_betas_chnk6.RData")
+remove(chnk6.raw)
 
 betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
 
@@ -114,6 +143,10 @@ remove(chnk6)
 
 #Chunk7
 ssets <- lapply(searchIDATprefixes("~/Desktop/chnk7"), readIDATpair, verbose = T)
+raw.betas <- lapply(ssets, function(x) getBetas(x, nondetection.mask = F, quality.mask = F))
+chnk7.raw <- ldply(raw.betas, "rbind")
+save(chnk7.raw, file = "~/Desktop/raw_betas_chnk7.RData")
+remove(chnk7.raw)
 
 betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
 
@@ -123,6 +156,10 @@ remove(chnk7)
 
 #Chunk8
 ssets <- lapply(searchIDATprefixes("~/Desktop/chnk8"), readIDATpair, verbose = T)
+raw.betas <- lapply(ssets, function(x) getBetas(x, nondetection.mask = F, quality.mask = F))
+chnk8.raw <- ldply(raw.betas, "rbind")
+save(chnk8.raw, file = "~/Desktop/raw_betas_chnk8.RData")
+remove(chnk8.raw)
 
 betas <- lapply(ssets, function(x) getBetas(dyeBiasCorrTypeINorm(noob(x))))
 
@@ -188,6 +225,38 @@ sesame_preprocess_betas.filtered <- sesame_preprocess_betas[,!is.na(colnames(ses
 allmask <- colSums(is.na(sesame_preprocess_betas.filtered)) != nrow(sesame_preprocess_betas.filtered)
 sesame_preprocess_betas.filtered <- sesame_preprocess_betas.filtered[,allmask]
 
+#Calculate fraction of NA in columns for ad hoc filtering
+frac_NA <- stack(colMeans(is.na(sesame_preprocess_betas.filtered)))
+
+#Remove anything with greater than 20% masked data
+frac_NA.filt <- as.logical(frac_NA$values < 0.2)
+sesame_preprocess_betas.filtered <- sesame_preprocess_betas.filtered[,frac_NA.filt]
+
+#Filter out the NA samples for age and sex
+#Note the need to use a string here instead of is.na which won't pick up the NA values since Age and Sex are factors
+samp_na <- !(samp_info.pd$Age == "NA")
+samp_info.pd <- samp_info.pd[samp_na,]
+sesame_preprocess_betas.filtered.mval <- sesame_preprocess_betas.filtered.mval[samp_na,]
+sesame_preprocess_betas.filtered <- sesame_preprocess_betas.filtered[samp_na,]
+
+#Remove masked data for SVD (can't have missing data for SVD)
+library(ChAMP)
+
+frac_NA.svd.filt <- as.logical(frac_NA$values == 0)
+sesame_preprocess_betas.filtered.svd <- sesame_preprocess_betas.filtered[,frac_NA.svd.filt]
+
+#Re-level the sample info
+samp_info.pd.svd <- data.frame(Age = as.character(samp_info.pd$Age) %>% as.numeric(.),
+                               Sex = factor(samp_info.pd$Sex),
+                               Sample_Group = factor(samp_info.pd$Sample_Group),
+                               Slide = factor(samp_info.pd$Slide),
+                               YOC = factor(samp_info.pd$year_of_collection),
+                               Smoke = factor(samp_info.pd$smoke))
+
+champ.SVD(beta = t(sesame_preprocess_betas.filtered.svd), pd = samp_info.pd.svd)
+
+#Conclusions: Strong numerical support to include slide and sample_group in the model; little numerical support to include smoking status or year of collection (highly overlaps with sample_group in higher PCs)
+
 ```
 
 ```{r dmplimma}
@@ -198,30 +267,39 @@ library(minfi)
 #Convert filtered beta value matrix to M-values
 sesame_preprocess_betas.filtered.mval <- logit2(sesame_preprocess_betas.filtered)
 
-#Filter out the NA samples for age and sex
-#Note the need to use a string here instead of is.na which won't pick up the NA values since Age and Sex are factors
-samp_na <- !(samp_info.pd$Age == "NA")
-samp_info.pd <- samp_info.pd[samp_na,]
-sesame_preprocess_betas.filtered.mval <- sesame_preprocess_betas.filtered.mval[samp_na,]
-sesame_preprocess_betas.filtered <- sesame_preprocess_betas.filtered[samp_na,]
-
 #Create the design matrix
 
-#Model: methylation ~ age + sex + age*sex
+#Model: methylation ~ age + sex + cd4t + cd8t + nk + mono + gran + bcell + slide
 age <- as.character(samp_info.pd$Age) %>% as.numeric(.)
 sex <- factor(samp_info.pd$Sex)
 slide <- factor(samp_info.pd$Slide)
-design <- model.matrix(~age*sex)
+cd4t <- samp_info.pd$CD4T
+cd8t <- samp_info.pd$CD8T
+nk <- samp_info.pd$NK
+mono <- samp_info.pd$Mono
+gran <- samp_info.pd$Gran
+bcell <- samp_info.pd$Bcell
+samp_group <- factor(samp_info.pd$Sample_Group)
 
-#Duplicate correlation for slide as a random effect?
-#Yes - given design2 results below
-#DupCor = 0.2151266
-dupcor <- duplicateCorrelation(t(sesame_preprocess_betas.filtered.mval), design, block = slide)
+#Cannot include samp_group as the design matrix results in non-estimable coefs for samp_group 2013
+design <- model.matrix(~age + sex + cd4t + cd8t + nk + mono + gran + bcell + slide)
 
-#Model: methylation ~ age + sex + age*sex + slide
+#Duplicate correlation for slide?
+#Yes - given design2 results below but will proceed with as fixed effect for consistency (e.g. betareg)
+#DupCor = 0.1869884
+#dupcor <- duplicateCorrelation(t(sesame_preprocess_betas.filtered.mval), design, block = slide)
+
+#Model: methylation ~ age + sex + cell proportions + slide
 #See if there is an association of slide with methylation or if including slide leads to better estimates of age effects
 #100k+ DMP for slide(s) - yeah it matters...
-#design2 <- model.matrix(~age + sex + age*sex + slide)
+#design2 <- model.matrix(~age + sex + cell proportions + slide)
+
+#Limma on M-values with slide as a fixed effect
+limma_fit.mval <- lmFit(t(sesame_preprocess_betas.filtered.mval), design)
+limma_fit_eb.mval <- eBayes(limma_fit.mval)
+
+#Summary of significant probes
+summary(decideTests(limma_fit_eb.mval))
 
 #Limma on M-values with slide as a blocking factor and estimated correlation
 limma_fit.mval <- lmFit(t(sesame_preprocess_betas.filtered.mval), design, block = slide, correlation = dupcor$consensus)
@@ -230,6 +308,13 @@ limma_fit_eb.mval <- eBayes(limma_fit.mval)
 #Summary of significant probes
 summary(decideTests(limma_fit_eb.mval))
 
+#Expected results
+#    (Intercept)    age sexMale   cd4t   cd8t     nk   mono   gran  bcell
+# -1      104317 121211   28364 170426 169420 168552 173738 178110 171018
+# 0       133372 189530  337701 177540 185265 189828 173179 170216 177319
+# 1       176465 103413   48089  66188  59469  55774  67237  65828  65817
+
+#What do things look like 
 #Limma on B-values
 limma_fit.bval <- lmFit(t(sesame_preprocess_betas.filtered), design)
 limma_fit_eb.bval <- eBayes(limma_fit.bval)
@@ -243,5 +328,1540 @@ summary(decideTests(limma_fit_eb.bval))
 
 #Repeat Triche et. al 2015 betareg results of increased sensitivity
 library(betareg)
+library(lmtest)
+library(plyr)
+library(dplyr)
+library(parallel)
+
+#Set up covariates from samp_info.pd
+age <- as.character(samp_info.pd$Age) %>% as.numeric(.)
+sex <- factor(samp_info.pd$Sex)
+slide <- factor(samp_info.pd$Slide)
+cd4t <- samp_info.pd$CD4T
+cd8t <- samp_info.pd$CD8T
+nk <- samp_info.pd$NK
+mono <- samp_info.pd$Mono
+gran <- samp_info.pd$Gran
+bcell <- samp_info.pd$Bcell
+
+#Build the output table
+createCoeftab <- function(breg) {
+    bbreg <- coef(breg)[c(2,3)] #Drop the slide fixed effects since there are 65 levels
+    sebreg <- diag(vcov(breg))[c(2,3)]
+    nms <- names(bbreg)
+    df <- data.frame(model    = rep(c("betareg"), each = 2),
+                     term     = nms,
+                     estimate = unname(c(bbreg)))
+    df <- transform(df,
+                    upper = estimate + sqrt(c(sebreg)),
+                    lower = estimate - sqrt(c(sebreg)))
+    df
+}
+
+#Build the betareg function
+beta.fit.ismb <- function(x, age, sex, cd4t, cd8t, nk, mono, gran, bcell, slide) {
+  data <- data.frame(x = x,
+                     age = age,
+                     sex = sex,
+                     cd4t = cd4t,
+                     cd8t = cd8t,
+                     nk = nk,
+                     mono = mono,
+                     gran = gran,
+                     bcell = bcell,
+                     slide = slide)
+  
+  #Run beta regression
+  br.fit <- betareg(x ~ age + sex + cd4t + cd8t + nk + mono + gran + bcell + slide,
+                    data = data, link = "logit", link.phi = "log")
+  
+  #Perform LRT on age and sex
+  br.fit.age <- betareg(x ~ sex + cd4t + cd8t + nk + mono + gran + bcell + slide,
+                    data = data, link = "logit", link.phi = "log")
+  br.fit.sex <- betareg(x ~ age + cd4t + cd8t + nk + mono + gran + bcell + slide,
+                    data = data, link = "logit", link.phi = "log")
+  
+  br.fit.age.lrt <- lrtest(br.fit.age, br.fit)$`Pr(>Chisq)`[2]
+  br.fit.sex.lrt <- lrtest(br.fit.sex, br.fit)$`Pr(>Chisq)`[2]
+  br.fit.lrt <- rbind(br.fit.age.lrt, br.fit.sex.lrt)
+  
+  #Create the output table
+  br.fit.table <- createCoeftab(br.fit)
+  
+  #Add on the LRT p-vals
+  br.fit.table$pval <- br.fit.lrt
+  
+  #Pull off the zstat as well
+  br.fit.zstat <- summary(br.fit)$coefficients$mean[c(2,3),3]
+  
+  #Add on the zstats
+  br.fit.table$zstat <- br.fit.zstat
+  
+  return(br.fit.table)
+
+  }
+
+set.seed(2018)
+
+br.fit.all.probes <- mclapply(as.data.frame(sesame_preprocess_betas.filtered), function(x) beta.fit.ismb(x, age, sex, cd4t, cd8t, nk, mono, gran, bcell, slide), mc.preschedule = F, mc.cores = 28)
+
+
+#Derive the mu and phi values from the fitted beta for simulation
+# mu_int = coef(br.fit)[1]
+# mu_age = coef(br.fit)[2]
+# mu_sex = coef(br.fit)[3]
+# mu_agesex <- coef(br.fit)[4]
+# mu <- expit(mu_int + mu_age + mu_sex + mu_age + mu_agesex)
+# phi = exp(coef(br.fit)[5])
+# s1 = mu * phi
+# s2 = (1 - mu) * phi
+# bdist <- rbeta(n = 729, shape1 = s1, shape2 = s2)
+# 
+# #Don't include the error here
+# error <- expit(rnorm(n=729, 0, sqrt(mean(resid(br.fit)^2))))
+
+```
+
+```{r glmmTMB}
+
+#Load in the libs
+library(glmmTMB)
+library(plyr)
+library(dplyr)
+library(parallel)
+
+#Load in the data
+load("/secondary/projects/bbc/research/ISMB_poster_2018/analysis/preprocessed_data/preprocessed_ISMB_data.RData")
+
+#Set up covariates from samp_info.pd
+age <- as.character(samp_info.pd$Age) %>% as.numeric(.)
+sex <- factor(samp_info.pd$Sex)
+slide <- factor(samp_info.pd$Slide)
+cd4t <- samp_info.pd$CD4T
+cd8t <- samp_info.pd$CD8T
+nk <- samp_info.pd$NK
+mono <- samp_info.pd$Mono
+gran <- samp_info.pd$Gran
+bcell <- samp_info.pd$Bcell
+
+#Build the output table
+createCoeftab <- function(TMB) {
+    bTMB <- fixef(TMB)$cond[2:3]
+    seTMB <- diag(vcov(TMB)$cond)[2:3]
+    nms <- names(bTMB)
+    df <- data.frame(model    = rep(c("glmmTMB"), each = 2),
+                     term     = nms,
+                     estimate = unname(c(bTMB)))
+    df <- transform(df,
+                    upper = estimate + sqrt(c(seTMB)),
+                    lower = estimate - sqrt(c(seTMB)))
+    df
+}
+
+#Build the glmmTMB function
+glmmtmb.fit.ismb <- function(x, age, sex, cd4t, cd8t, nk, mono, gran, bcell, slide) {
+  data <- data.frame(x = x,
+                     age = age,
+                     sex = sex,
+                     cd4t = cd4t,
+                     cd8t = cd8t,
+                     nk = nk,
+                     mono = mono,
+                     gran = gran,
+                     bcell = bcell,
+                     slide = slide)
+  
+  #Run mixed effects beta regression
+  mebr.fit <- glmmTMB(x ~ age + sex + cd4t + cd8t + nk + mono + gran + bcell + (1 | slide), data = data, family = list(family = "beta", link = "logit"), se = T)
+  
+  #Perform LRT on age and sex
+  mebr.lrt <- drop1(mebr.fit, scope = c("age", "sex"), test = "Chisq")
+  
+  #Get the beta estimates
+  mebr.fit.est <- createCoeftab(mebr.fit)
+  
+  #Extract the LRT p-values *UNADJUSTED*
+  mebr.fit.lrtpval <- mebr.lrt$`Pr(>Chi)`[2:3]
+  
+  #Build the output df
+  mebr.fit.est$pval <- mebr.fit.lrtpval
+  
+  #Grab Wald z-stat for region level analysis
+  sum.stat <- summary(mebr.fit)$coefficients$cond[c(2,3),3]
+  
+  #Add the z-stat
+  mebr.fit.est$zstat <- sum.stat
+  
+  return(mebr.fit.est)
+
+  }
+
+set.seed(2018)
+
+mebr.fit.all.probes <- mclapply(as.data.frame(sesame_preprocess_betas.filtered), function(x) glmmtmb.fit.ismb(x, age, sex, cd4t, cd8t, nk, mono, gran, bcell, slide), mc.preschedule = F, mc.cores = 40)
+
+save(mebr.fit.all.probes, file = "/secondary/projects/bbc/research/ISMB_poster_2018/analysis/glmmtmb_fit_allprobes.RData")
+
+```
+
+```{r sampler}
+
+##Plot distribution of effect sizes from M-value fitted limma (slide as a fixed effect) results
+load("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/limma_mval_eb_fit.RData")
+
+#Set a random seed
+set.seed(2018)
+
+#Age results
+limma_res_age <- topTable(limma_fit_eb.mval, n = Inf, coef = "age")
+limma_res_age$probes <- rownames(limma_res_age)
+limma_res_age <- limma_res_age %>% filter(!is.na(limma_res_age$logFC))
+
+#Effect sizes in fold-change of probes with nominal p-value < 0.05
+limma_res_age$effsize <- abs(2^limma_res_age$logFC)
+limma_res_age_effsize <- limma_res_age %>% filter(P.Value < 0.05)
+limma_res_age_effsize$group <- "mval"
+
+#Plot effect sizes
+les <- ggplot(limma_res_age_effsize, aes(x = effsize, fill = group)) +
+  geom_density(size = 1.2) +
+  scale_fill_manual(values = "lightgray") +
+  xlab("Effect size (fold-change)") +
+  ylab("Density") +
+  theme_bw(base_size = 38) +
+  theme(
+    legend.position = "null"
+  )
+
+ggsave(plot = les, path = "~/Desktop", filename = "limma_effect_sizes_density_plot.svg", width = 10, height = 7, units = "in", dpi = 300)
+
+#Plot beta and M-values for one sample
+samp.to.plot <- data.frame(bval = sesame_preprocess_betas.filtered[1,],
+                           mval = sesame_preprocess_betas.filtered.mval[1,],
+                           group = rownames(sesame_preprocess_betas.filtered)[1])
+bvalplot <- ggplot(samp.to.plot[,c(1,3)], aes(x = bval, fill = group)) +
+  stat_density(geom = "line", size = 1.2) +
+  scale_fill_manual(values = "lightgray") +
+  xlab("Beta-values") +
+  ylab("Density") +
+  theme_bw(base_size = 38) +
+  theme(
+    legend.position = "null"
+  )
+
+mvalplot <- ggplot(samp.to.plot[,c(2,3)], aes(x = mval, fill = group)) +
+  stat_density(geom = "line", size = 1.2, color = "red") +
+  #scale_color_manual(values = "red") +
+  xlab("M-values") +
+  ylab("Density") +
+  theme_bw(base_size = 38) +
+  theme(
+    legend.position = "null"
+  )
+
+ggsave(plot = bvalplot, path = "~/Desktop", filename = "bval_density_plot.svg", width = 8, height = 7, units = "in", dpi = 300)
+ggsave(plot = mvalplot, path = "~/Desktop", filename = "mval_density_plot.svg", width = 8, height = 7, units = "in", dpi = 300)
+
+#Get a range of pre-determined effect sizes
+#min - 0.958
+#max - 1.047
+#0.96, 0.97, 0.98, 0.99, 1.0, 1.01, 1.02, 1.03, 1.04
+
+#0.96
+limma_res.age.effsize1 <- limma_res_age_effsize %>% filter(effsize == 0.96 | between(effsize, 0.95, 0.969)) %>% sample_n(size = 1)
+
+#0.97
+limma_res.age.effsize2 <- limma_res_age_effsize %>% filter(effsize == 0.97 | between(effsize, 0.969, 0.979)) %>% sample_n(size = 1)
+
+#0.98
+limma_res.age.effsize3 <- limma_res_age_effsize %>% filter(effsize == 0.98 | between(effsize, 0.979, 0.989)) %>% sample_n(size = 1)
+
+#0.99
+limma_res.age.effsize4 <- limma_res_age_effsize %>% filter(effsize == 0.99 | between(effsize, 0.989, 0.999)) %>% sample_n(size = 1)
+
+#1.0
+limma_res.age.effsize5 <- limma_res_age_effsize %>% filter(effsize == 1.0 | between(effsize, 0.999, 1.009)) %>% sample_n(size = 1)
+
+#1.01
+limma_res.age.effsize6 <- limma_res_age_effsize %>% filter(effsize == 1.01 | between(effsize, 1.009, 1.019)) %>% sample_n(size = 1)
+
+#1.02
+limma_res.age.effsize7 <- limma_res_age_effsize %>% filter(effsize == 1.02 | between(effsize, 1.019, 1.029)) %>% sample_n(size = 1)
+
+#1.03
+limma_res.age.effsize8 <- limma_res_age_effsize %>% filter(effsize == 1.03 | between(effsize, 1.029, 1.039)) %>% sample_n(size = 1)
+
+#1.04
+limma_res.age.effsize9 <- limma_res_age_effsize %>% filter(effsize == 1.04 | between(effsize, 1.039, 1.049)) %>% sample_n(size = 1)
+
+#Sex difference results
+limma_res_sex <- topTable(limma_fit_eb.mval, n = Inf, coef = "sexMale")
+limma_res_sex$probes <- rownames(limma_res_sex)
+limma_res_sex <- limma_res_sex %>% filter(!is.na(limma_res_sex$logFC))
+
+limma_res_sex$effsize <- abs(2^limma_res_sex$logFC)
+limma_res_sex_effsize <- limma_res_sex %>% filter(P.Value < 0.05)
+limma_res_sex_effsize$group <- "mval"
+
+#Plot effect sizes
+lesx <- ggplot(limma_res_sex_effsize, aes(x = effsize, fill = group)) +
+  geom_density(size = 1.2) +
+  scale_fill_manual(values = "red") +
+  xlab("Effect size (fold-change)") +
+  ylab("Density") +
+  theme_bw(base_size = 38) +
+  theme(
+    legend.position = "null"
+  )
+
+ggsave(plot = lesx, path = "~/Desktop", filename = "limma_effect_sizes_density_plot_sex.svg", width = 10, height = 7, units = "in", dpi = 300)
+
+#Get a range of pre-determined effect sizes
+#0.2, 0.4, 0.6, 0.8, 1.0, 1.25, 1.5, 2.0, 2.5
+
+#0.2
+limma_res.sex.effsize1 <- limma_res_sex_effsize %>% filter(effsize == 0.2 | between(effsize, 0.1, 0.3)) %>% sample_n(size = 1)
+
+#0.4
+limma_res.sex.effsize2 <- limma_res_sex_effsize %>% filter(effsize == 0.4 | between(effsize, 0.3, 0.4)) %>% sample_n(size = 1)
+
+#0.6
+limma_res.sex.effsize3 <- limma_res_sex_effsize %>% filter(effsize == 0.6 | between(effsize, 0.5, 0.7)) %>% sample_n(size = 1)
+
+#0.8
+limma_res.sex.effsize4 <- limma_res_sex_effsize %>% filter(effsize == 0.8 | between(effsize, 0.7, 0.9)) %>% sample_n(size = 1)
+
+#1.0
+limma_res.sex.effsize5 <- limma_res_sex_effsize %>% filter(effsize == 1.0 | between(effsize, 0.9, 1.1)) %>% sample_n(size = 1)
+
+#1.25
+limma_res.sex.effsize6 <- limma_res_sex_effsize %>% filter(effsize == 1.25 | between(effsize, 1.2, 1.3)) %>% sample_n(size = 1)
+
+#1.5
+limma_res.sex.effsize7 <- limma_res_sex_effsize %>% filter(effsize == 1.5 | between(effsize, 1.4, 1.6)) %>% sample_n(size = 1)
+
+#2.0
+limma_res.sex.effsize8 <- limma_res_sex_effsize %>% filter(effsize == 2.0 | between(effsize, 1.9, 2.1)) %>% sample_n(size = 1)
+
+#2.5
+limma_res.sex.effsize9 <- limma_res_sex_effsize %>% filter(effsize == 2.5 | between(effsize, 2.4, 2.6)) %>% sample_n(size = 1)
+
+#Bind together the random probes
+#Age
+age_probes_sim <- rbind(limma_res.age.effsize1, limma_res.age.effsize2, limma_res.age.effsize3, limma_res.age.effsize4, limma_res.age.effsize5, limma_res.age.effsize6, limma_res.age.effsize7, limma_res.age.effsize8, limma_res.age.effsize9)
+
+#Sex
+sex_probes_sim <- rbind(limma_res.sex.effsize1, limma_res.sex.effsize2, limma_res.sex.effsize3, limma_res.sex.effsize4, limma_res.sex.effsize5, limma_res.sex.effsize6, limma_res.sex.effsize7, limma_res.sex.effsize8, limma_res.sex.effsize9)
+
+#Save the random probes
+save(age_probes_sim, sex_probes_sim, file = "/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/probes_to_sample.RData")
+
+#Subset the beta value matrix for these probes to simulate
+age_probes_sim.bvals <- sesame_preprocess_betas.filtered[,age_probes_sim$probes]
+sex_probes_sim.bvals <- sesame_preprocess_betas.filtered[,sex_probes_sim$probes]
+
+#Inverse logit
+inv_logit <- function(x){
+  exp(x) / (1 + exp(x))
+}
+
+#Fit and simulate
+#Build the betareg function
+library(minfi)
+library(glmmTMB)
+library(locfit)
+library(car)
+
+age <- as.character(samp_info.pd$Age) %>% as.numeric(.)
+sex <- factor(samp_info.pd$Sex)
+cd4t <- samp_info.pd$CD4T
+cd8t <- samp_info.pd$CD8T
+nk <- samp_info.pd$NK
+mono <- samp_info.pd$Mono
+gran <- samp_info.pd$Gran
+bcell <- samp_info.pd$Bcell
+slide <- factor(samp_info.pd$Slide)
+
+beta.fit.ismb.sim <- function(x, age, sex, cd4t, cd8t, nk, mono, gran, bcell, slide) {
+  #browser()
+  data <- data.frame(x = logit2(x),
+                     age = age,
+                     sex = sex,
+                     cd4t = cd4t,
+                     cd8t = cd8t,
+                     nk = nk,
+                     mono = mono,
+                     gran = gran,
+                     bcell = bcell,
+                     slide = slide)
+  
+  #Run linear regression on M-values to use simulation function of glmmTMB
+  #Back transform later for betas
+  #Cannot approximate a beta distribution well with betareg and estimated mu and phi parameters that resembles the real data
+  br.fit <- glmmTMB(x ~ age + sex + cd4t + cd8t + nk + mono + gran + bcell + (1 | slide), data = data, family = "gaussian")
+  br.fit.sim <- simulate(br.fit, nsim = 1000)
+  
+  return(br.fit.sim)
+
+  }
+
+set.seed(2018)
+
+#simulate each loci 1000 times using the estimated parameters for the full mixed effects regression
+br.fit.sim.age <- lapply(as.data.frame(age_probes_sim.bvals), function(x) beta.fit.ismb.sim(x, age, sex, cd4t, cd8t, nk, mono, gran, bcell, slide))
+br.fit.sim.age.beta <- lapply(br.fit.sim.age, function(x) ilogit2(x))
+br.fit.sim.age.beta <- ldply(br.fit.sim.age.beta, "rbind")
+br.fit.sim.age.beta$group <- "Simulated"
+
+br.fit.sim.sex <- lapply(as.data.frame(sex_probes_sim.bvals), function(x) beta.fit.ismb.sim(x, age, sex, cd4t, cd8t, nk, mono, gran, bcell, slide))
+br.fit.sim.sex.beta <- lapply(br.fit.sim.sex, function(x) ilogit2(x))
+br.fit.sim.sex.beta <- ldply(br.fit.sim.sex.beta, "rbind")
+br.fit.sim.sex.beta$group <- "Simulated"
+
+save(br.fit.sim.age.beta, br.fit.sim.sex.beta, file = "/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/simulated_data.RData")
+
+```
+
+```{r plotsimdists}
+
+library(reshape2)
+library(ggplot2)
+library(forcats)
+library(cowplot)
+
+#Plot the simulated distributions with empirical data
+#Age
+age.loci1 <- br.fit.sim.age.beta %>% filter(.id == "cg10501210")
+age.loci2 <- br.fit.sim.age.beta %>% filter(.id == "cg07892785")
+
+age.loci1.obs <- as.data.frame(age_probes_sim.bvals[!is.na(age_probes_sim.bvals[,1]),1])
+age.loci1.obs$group <- "Observed"
+age.loci1.obs$.id <- "cg10501210"
+colnames(age.loci1.obs)[1] <- "empirical"
+
+age.loci1 <- melt(age.loci1, id.vars = c(".id", "group"))
+age.loci1.obs <- melt(age.loci1.obs, id.vars = c(".id", "group"))
+
+age.loci1.all <- rbind(age.loci1, age.loci1.obs)
+
+age.loci2.obs <- as.data.frame(age_probes_sim.bvals[!is.na(age_probes_sim.bvals[,7]),7])
+age.loci2.obs$group <- "Observed"
+age.loci2.obs$.id <- "cg07892785"
+colnames(age.loci2.obs)[1] <- "empirical"
+
+age.loci2 <- melt(age.loci2, id.vars = c(".id", "group"))
+age.loci2.obs <- melt(age.loci2.obs, id.vars = c(".id", "group"))
+
+age.loci2.all <- rbind(age.loci2, age.loci2.obs)
+
+age.loci.plot <- rbind(age.loci1.all, age.loci2.all)
+
+age.sim.plot <- ggplot(age.loci.plot, aes(x = value, color = fct_rev(group), fill = variable)) +
+  geom_density(alpha = 0.000001) +
+  xlab("Beta-value") +
+  ylab("Density") +
+  facet_grid(. ~ .id, scales = "free_y") +
+  scale_color_manual(name = c("Observed", "Simulated"), values = c("darkgray", "red")) +
+  #scale_fill_viridis(discrete = T) +
+  theme_bw(base_size = 14) +
+  theme (
+    legend.position = "null"
+  )
+
+#Sex
+sex.loci1 <- br.fit.sim.sex.beta %>% filter(.id == "cg12763978")
+sex.loci2 <- br.fit.sim.sex.beta %>% filter(.id == "cg24792717")
+
+sex.loci1.obs <- as.data.frame(sex_probes_sim.bvals[!is.na(sex_probes_sim.bvals[,3]),3])
+sex.loci1.obs$group <- "Observed"
+sex.loci1.obs$.id <- "cg12763978"
+colnames(sex.loci1.obs)[1] <- "empirical"
+
+sex.loci1 <- melt(sex.loci1, id.vars = c(".id", "group"))
+sex.loci1.obs <- melt(sex.loci1.obs, id.vars = c(".id", "group"))
+
+sex.loci1.all <- rbind(sex.loci1, sex.loci1.obs)
+
+sex.loci2.obs <- as.data.frame(sex_probes_sim.bvals[!is.na(sex_probes_sim.bvals[,4]),4])
+sex.loci2.obs$group <- "Observed"
+sex.loci2.obs$.id <- "cg24792717"
+colnames(sex.loci2.obs)[1] <- "empirical"
+
+sex.loci2 <- melt(sex.loci2, id.vars = c(".id", "group"))
+sex.loci2.obs <- melt(sex.loci2.obs, id.vars = c(".id", "group"))
+
+sex.loci2.all <- rbind(sex.loci2, sex.loci2.obs)
+
+sex.loci.plot <- rbind(sex.loci1.all, sex.loci2.all)
+
+sex.sim.plot <- ggplot(sex.loci.plot, aes(x = value, color = fct_rev(group), fill = variable)) +
+  geom_density(alpha = 0.000001) +
+  xlab("Beta-value") +
+  ylab("Density") +
+  facet_grid(. ~ .id, scales = "free_y") +
+  scale_color_manual(name = c("Observed", "Simulated"), values = c("darkgray", "red")) +
+  #scale_fill_viridis(discrete = T) +
+  theme_bw(base_size = 14) +
+  theme (
+    legend.position = "null"
+  )
+
+plot_grid(age.sim.plot, sex.sim.plot, align = "h", labels = "AUTO", ncol = 1, nrow = 2)
+
+
+```
+
+```{r plotdescriptivestats}
+
+#Plot histogram of ages faceted by gender
+ds <- ggplot(samp_info.pd) +
+  geom_histogram(aes(x = as.character(samp_info.pd$Age) %>% as.numeric(.), fill = Sex), bins = 30) +
+  facet_grid(.~Sex) +
+  xlab("Age") +
+  ylab("Count") +
+  scale_x_continuous(limits = c(0,100)) +
+  scale_fill_manual(values = c("darkgray", "red")) +
+  theme_bw(base_size = 40) +
+  theme(
+    legend.position = "null"
+  )
+
+ggsave(plot = ds, path = "~/Desktop", filename = "descriptive_stats.svg", width = 22, height = 8, units = "in", dpi = 300)
+
+```
+
+```{r plotdensitypreprocess}
+
+#Load in pre-processed data
+sesame_preprocess_betas.filtered.plot <- as.data.frame(sesame_preprocess_betas.filtered[1:8,])
+sesame_raw_betas.plot <- as.data.frame(chnk1.raw[1:8,])
+sesame_raw_betas.plot <- sesame_raw_betas.plot[,-1]
+
+#Add group variables and melt
+sesame_preprocess_betas.filtered.plot$group <- "Processed" 
+sesame_preprocess_betas.filtered.plot$samples <- seq(1:8)
+sesame_raw_betas.plot$group <- "Raw"
+sesame_raw_betas.plot$samples <- seq(1:8)
+
+sesame_preprocess_betas.filtered.plot.melt <- melt(sesame_preprocess_betas.filtered.plot, id.vars = c("group", "samples"))
+sesame_raw_betas.plot.melt <- melt(sesame_raw_betas.plot, id.vars = c("group", "samples"))
+signalplot <- rbind(sesame_raw_betas.plot.melt, sesame_preprocess_betas.filtered.plot.melt)
+
+sp <- ggplot(data = signalplot, aes(x = value, color = as.factor(samples))) +
+  geom_density(size = 1.2) +
+  facet_grid(.~fct_rev(group)) +
+  scale_color_brewer(palette = "Dark2") +
+  ylab("Density") +
+  xlab("Beta-values") +
+  theme_bw(base_size = 38) +
+  theme(
+    legend.position = "null"
+  )
+
+ggsave(plot = sp, path = "~/Desktop", filename = "processed_signal_density.svg", width = 22, height = 8, units = "in", dpi = 300)
+
+```
+
+```{r isolatesimeffsizes}
+
+#load in simulated data
+load("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/simulated_data.RData")
+
+#Effect sizes
+#Age
+
+#es1
+br.fit.sim.age.beta.loci1 <- br.fit.sim.age.beta %>% filter(.id == "cg10501210") %>% select(-group) %>% mutate(sample_names = names(age_probes_sim.bvals[which(!is.na(age_probes_sim.bvals[,1])),1]))
+#es2
+br.fit.sim.age.beta.loci2 <- br.fit.sim.age.beta %>% filter(.id == "cg22943590") %>% select(-group) %>% mutate(sample_names = names(age_probes_sim.bvals[which(!is.na(age_probes_sim.bvals[,2])),2]))
+#es3
+br.fit.sim.age.beta.loci3 <- br.fit.sim.age.beta %>% filter(.id == "cg19500607") %>% select(-group) %>% mutate(sample_names = names(age_probes_sim.bvals[which(!is.na(age_probes_sim.bvals[,3])),3]))
+#es4
+br.fit.sim.age.beta.loci4 <- br.fit.sim.age.beta %>% filter(.id == "cg03907575") %>% select(-group) %>% mutate(sample_names = names(age_probes_sim.bvals[which(!is.na(age_probes_sim.bvals[,4])),4]))
+#es5
+br.fit.sim.age.beta.loci5 <- br.fit.sim.age.beta %>% filter(.id == "cg07093942") %>% select(-group) %>% mutate(sample_names = names(age_probes_sim.bvals[which(!is.na(age_probes_sim.bvals[,5])),5]))
+#es6
+br.fit.sim.age.beta.loci6 <- br.fit.sim.age.beta %>% filter(.id == "cg11002986") %>% select(-group) %>% mutate(sample_names = names(age_probes_sim.bvals[which(!is.na(age_probes_sim.bvals[,6])),6]))
+#es7
+br.fit.sim.age.beta.loci7 <- br.fit.sim.age.beta %>% filter(.id == "cg07892785") %>% select(-group) %>% mutate(sample_names = names(age_probes_sim.bvals[which(!is.na(age_probes_sim.bvals[,7])),7]))
+#es8
+br.fit.sim.age.beta.loci8 <- br.fit.sim.age.beta %>% filter(.id == "cg21159778") %>% select(-group) %>% mutate(sample_names = names(age_probes_sim.bvals[which(!is.na(age_probes_sim.bvals[,8])),8]))
+#es9
+br.fit.sim.age.beta.loci9 <- br.fit.sim.age.beta %>% filter(.id == "cg07544187") %>% select(-group)  %>% mutate(sample_names = names(age_probes_sim.bvals[which(!is.na(age_probes_sim.bvals[,9])),9]))
+
+#Sex
+
+#es1
+br.fit.sim.sex.beta.loci1 <- br.fit.sim.sex.beta %>% filter(.id == "cg00167275") %>% select(-group) %>% mutate(sample_names = names(sex_probes_sim.bvals[which(!is.na(sex_probes_sim.bvals[,1])),1]))
+#es2
+br.fit.sim.sex.beta.loci2 <- br.fit.sim.sex.beta %>% filter(.id == "cg07549526") %>% select(-group) %>% mutate(sample_names = names(sex_probes_sim.bvals[which(!is.na(sex_probes_sim.bvals[,2])),2]))
+#es3
+br.fit.sim.sex.beta.loci3 <- br.fit.sim.sex.beta %>% filter(.id == "cg12763978") %>% select(-group) %>% mutate(sample_names = names(sex_probes_sim.bvals[which(!is.na(sex_probes_sim.bvals[,3])),3]))
+#es4
+br.fit.sim.sex.beta.loci4 <- br.fit.sim.sex.beta %>% filter(.id == "cg24792717") %>% select(-group) %>% mutate(sample_names = names(sex_probes_sim.bvals[which(!is.na(sex_probes_sim.bvals[,4])),4]))
+#es5
+br.fit.sim.sex.beta.loci5 <- br.fit.sim.sex.beta %>% filter(.id == "cg04095826") %>% select(-group) %>% mutate(sample_names = names(sex_probes_sim.bvals[which(!is.na(sex_probes_sim.bvals[,5])),5]))
+#es6
+br.fit.sim.sex.beta.loci6 <- br.fit.sim.sex.beta %>% filter(.id == "cg01873886") %>% select(-group) %>% mutate(sample_names = names(sex_probes_sim.bvals[which(!is.na(sex_probes_sim.bvals[,6])),6]))
+#es7
+br.fit.sim.sex.beta.loci7 <- br.fit.sim.sex.beta %>% filter(.id == "cg08395793") %>% select(-group) %>% mutate(sample_names = names(sex_probes_sim.bvals[which(!is.na(sex_probes_sim.bvals[,7])),7]))
+#es8
+br.fit.sim.sex.beta.loci8 <- br.fit.sim.sex.beta %>% filter(.id == "cg07381872") %>% select(-group) %>% mutate(sample_names = names(sex_probes_sim.bvals[which(!is.na(sex_probes_sim.bvals[,8])),8]))
+#es9
+br.fit.sim.sex.beta.loci9 <- br.fit.sim.sex.beta %>% filter(.id == "cg22266749") %>% select(-group)  %>% mutate(sample_names = names(sex_probes_sim.bvals[which(!is.na(sex_probes_sim.bvals[,9])),9]))
+
+```
+
+```{r limma_age_sim}
+library(limma)
+library(minfi)
+
+#Calculate empirical significance level
+#Derived from limma fitted on m-values for age effects
+alpha_empirical <- 0.05 / 1000
+
+#Simulate power with limma fitted on m-values
+#All samples
+limma_mvals.sim.fit <- function(sample_info, effect_matrix, alpha, samp_n = NULL) {
+  #Subset effect sizes and fit
+  #Isolate simulation data and convert to mvals
+  sims <- logit2(effect_matrix[,grepl("sim", colnames(effect_matrix))])
+  rownames(sims) <- effect_matrix$sample_names
+  pvals <- lapply(as.data.frame(sims), function(x) {
+    #Convert to a data frame
+    sim.mat <- data.frame(x = x,
+                          sample_names = as.character(rownames(sims)))
+    rownames(sim.mat) <- sim.mat$sample_names
+    #Check if a random sample is expected
+    ifelse(!is.null(samp_n), sim.mat.samp <- sim.mat %>% sample_n(., size = samp_n), sim.mat.samp <- sim.mat)
+    #Order the output to match with sample info
+    sim.mat.samp <- sim.mat.samp[order(sim.mat.samp$sample_names),]
+    #Sample info for design matrix
+    sim.samp_info <- sample_info[sample_info$Sample_ID %in% sim.mat.samp$sample_names,]
+    #Convert to a character vector
+    sim.samp_info$Sample_ID <- as.character(sim.samp_info$Sample_ID)
+    #Order the sample info to match the simulation matrix values
+    sim.samp_info <- sim.samp_info[order(sim.samp_info$Sample_ID),]
+    #Sanity check
+    stopifnot(sim.mat.samp$sample_names == sim.samp_info$Sample_ID)
+    #Check if both genders are included in the sample and if not, resample
+    while (!"Male" %in% sim.samp_info$Sex | !"Female" %in% sim.samp_info$Sex) {
+      sim.mat.samp = sim.mat %>% sample_n(., size = samp_n)
+      #Order the output to match with sample info
+      sim.mat.samp = sim.mat.samp[order(sim.mat.samp$sample_names),]
+      #Sample info for design matrix
+      sim.samp_info = sample_info[sample_info$Sample_ID %in% sim.mat.samp$sample_names,]
+      #Convert to a character vector
+      sim.samp_info$Sample_ID = as.character(sim.samp_info$Sample_ID)
+      #Order the sample info to match the simulation matrix values
+      sim.samp_info = sim.samp_info[order(sim.samp_info$Sample_ID),]
+      #Sanity check
+      stopifnot(sim.mat.samp$sample_names == sim.samp_info$Sample_ID)
+    }
+    #Build design matrix
+    sim.age <- as.character(sim.samp_info$Age) %>% as.numeric(.)
+    sim.sex <- factor(sim.samp_info$Sex)
+    sim.slide <- factor(sim.samp_info$Slide)
+    #Fit with limma
+    design <- model.matrix(~sim.age + sim.sex)
+    limma_data <- t(sim.mat.samp[,-2])
+    fit <- lmFit(limma_data, design)
+    fit.eb <- eBayes(fit)
+    tt <- topTable(fit.eb, n = Inf, coef = "sim.age")
+    pval <- ifelse(tt$P.Value < alpha, 1, 0)
+  })
+  return(sum(unlist(pvals))/1000)
+}
+
+#PanelA - all samples
+es1.limma.mval.all <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical)
+es2.limma.mval.all <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical)
+es3.limma.mval.all <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical)
+es4.limma.mval.all <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical)
+es5.limma.mval.all <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical)
+es6.limma.mval.all <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical)
+es7.limma.mval.all <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical)
+es8.limma.mval.all <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical)
+es9.limma.mval.all <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical)
+
+#PanelB - 100 samples
+es1.limma.mval.100 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 100)
+es2.limma.mval.100 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 100)
+es3.limma.mval.100 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 100)
+es4.limma.mval.100 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 100)
+es5.limma.mval.100 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 100)
+es6.limma.mval.100 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 100)
+es7.limma.mval.100 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 100)
+es8.limma.mval.100 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 100)
+es9.limma.mval.100 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 100)
+
+#PanelC - 50 samples
+es1.limma.mval.50 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 50)
+es2.limma.mval.50 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 50)
+es3.limma.mval.50 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 50)
+es4.limma.mval.50 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 50)
+es5.limma.mval.50 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 50)
+es6.limma.mval.50 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 50)
+es7.limma.mval.50 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 50)
+es8.limma.mval.50 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 50)
+es9.limma.mval.50 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 50)
+
+#PanelD - 40 samples
+es1.limma.mval.40 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 40)
+es2.limma.mval.40 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 40)
+es3.limma.mval.40 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 40)
+es4.limma.mval.40 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 40)
+es5.limma.mval.40 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 40)
+es6.limma.mval.40 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 40)
+es7.limma.mval.40 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 40)
+es8.limma.mval.40 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 40)
+es9.limma.mval.40 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 40)
+
+#PanelE - 20 samples
+es1.limma.mval.20 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 20)
+es2.limma.mval.20 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 20)
+es3.limma.mval.20 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 20)
+es4.limma.mval.20 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 20)
+es5.limma.mval.20 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 20)
+es6.limma.mval.20 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 20)
+es7.limma.mval.20 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 20)
+es8.limma.mval.20 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 20)
+es9.limma.mval.20 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 20)
+
+#PanelF - 10 samples
+es1.limma.mval.10 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 10)
+es2.limma.mval.10 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 10)
+es3.limma.mval.10 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 10)
+es4.limma.mval.10 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 10)
+es5.limma.mval.10 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 10)
+es6.limma.mval.10 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 10)
+es7.limma.mval.10 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 10)
+es8.limma.mval.10 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 10)
+es9.limma.mval.10 <- limma_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 10)
+
+#Simulate power with limma fitted on beta-values
+#All samples
+limma_bvals.sim.fit <- function(sample_info, effect_matrix, alpha, samp_n = NULL) {
+  #Subset effect sizes and fit
+  #Isolate simulation data and convert to mvals
+  sims <- effect_matrix[,grepl("sim", colnames(effect_matrix))]
+  rownames(sims) <- effect_matrix$sample_names
+  pvals <- lapply(as.data.frame(sims), function(x) {
+    #Convert to a data frame
+    sim.mat <- data.frame(x = x,
+                          sample_names = as.character(rownames(sims)))
+    rownames(sim.mat) <- sim.mat$sample_names
+    #Check if a random sample is expected
+    ifelse(!is.null(samp_n), sim.mat.samp <- sim.mat %>% sample_n(., size = samp_n), sim.mat.samp <- sim.mat)
+    #Order the output to match with sample info
+    sim.mat.samp <- sim.mat.samp[order(sim.mat.samp$sample_names),]
+    #Sample info for design matrix
+    sim.samp_info <- sample_info[sample_info$Sample_ID %in% sim.mat.samp$sample_names,]
+    #Convert to a character vector
+    sim.samp_info$Sample_ID <- as.character(sim.samp_info$Sample_ID)
+    #Order the sample info to match the simulation matrix values
+    sim.samp_info <- sim.samp_info[order(sim.samp_info$Sample_ID),]
+    #Sanity check
+    stopifnot(sim.mat.samp$sample_names == sim.samp_info$Sample_ID)
+    #Check if both genders are included in the sample and if not, resample
+    while (!"Male" %in% sim.samp_info$Sex | !"Female" %in% sim.samp_info$Sex) {
+      sim.mat.samp = sim.mat %>% sample_n(., size = samp_n)
+      #Order the output to match with sample info
+      sim.mat.samp = sim.mat.samp[order(sim.mat.samp$sample_names),]
+      #Sample info for design matrix
+      sim.samp_info = sample_info[sample_info$Sample_ID %in% sim.mat.samp$sample_names,]
+      #Convert to a character vector
+      sim.samp_info$Sample_ID = as.character(sim.samp_info$Sample_ID)
+      #Order the sample info to match the simulation matrix values
+      sim.samp_info = sim.samp_info[order(sim.samp_info$Sample_ID),]
+      #Sanity check
+      stopifnot(sim.mat.samp$sample_names == sim.samp_info$Sample_ID)
+    }
+    #Build design matrix
+    sim.age <- as.character(sim.samp_info$Age) %>% as.numeric(.)
+    sim.sex <- factor(sim.samp_info$Sex)
+    sim.slide <- factor(sim.samp_info$Slide)
+    #Fit with limma
+    design <- model.matrix(~sim.age + sim.sex)
+    limma_data <- t(sim.mat.samp[,-2])
+    fit <- lmFit(limma_data, design)
+    fit.eb <- eBayes(fit)
+    tt <- topTable(fit.eb, n = Inf, coef = "sim.age")
+    pval <- ifelse(tt$P.Value < alpha, 1, 0)
+  })
+  return(sum(unlist(pvals))/1000)
+}
+
+#PanelA - all samples
+es1.limma.bval.all <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical)
+es2.limma.bval.all <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical)
+es3.limma.bval.all <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical)
+es4.limma.bval.all <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical)
+es5.limma.bval.all <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical)
+es6.limma.bval.all <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical)
+es7.limma.bval.all <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical)
+es8.limma.bval.all <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical)
+es9.limma.bval.all <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical)
+
+#PanelB - 100 samples
+es1.limma.bval.100 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 100)
+es2.limma.bval.100 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 100)
+es3.limma.bval.100 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 100)
+es4.limma.bval.100 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 100)
+es5.limma.bval.100 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 100)
+es6.limma.bval.100 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 100)
+es7.limma.bval.100 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 100)
+es8.limma.bval.100 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 100)
+es9.limma.bval.100 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 100)
+
+#PanelC - 50 samples
+es1.limma.bval.50 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 50)
+es2.limma.bval.50 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 50)
+es3.limma.bval.50 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 50)
+es4.limma.bval.50 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 50)
+es5.limma.bval.50 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 50)
+es6.limma.bval.50 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 50)
+es7.limma.bval.50 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 50)
+es8.limma.bval.50 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 50)
+es9.limma.bval.50 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 50)
+
+#PanelD - 40 samples
+es1.limma.bval.40 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 40)
+es2.limma.bval.40 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 40)
+es3.limma.bval.40 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 40)
+es4.limma.bval.40 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 40)
+es5.limma.bval.40 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 40)
+es6.limma.bval.40 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 40)
+es7.limma.bval.40 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 40)
+es8.limma.bval.40 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 40)
+es9.limma.bval.40 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 40)
+
+#PanelE - 20 samples
+es1.limma.bval.20 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 20)
+es2.limma.bval.20 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 20)
+es3.limma.bval.20 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 20)
+es4.limma.bval.20 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 20)
+es5.limma.bval.20 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 20)
+es6.limma.bval.20 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 20)
+es7.limma.bval.20 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 20)
+es8.limma.bval.20 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 20)
+es9.limma.bval.20 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 20)
+
+#PanelF - 10 samples
+es1.limma.bval.10 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 10)
+es2.limma.bval.10 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 10)
+es3.limma.bval.10 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 10)
+es4.limma.bval.10 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 10)
+es5.limma.bval.10 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 10)
+es6.limma.bval.10 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 10)
+es7.limma.bval.10 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 10)
+es8.limma.bval.10 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 10)
+es9.limma.bval.10 <- limma_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 10)
+
+#Gather and plot limma m-val data
+#All samples
+limma.all.mval <- c(es1.limma.mval.all,es2.limma.mval.all,es3.limma.mval.all,es4.limma.mval.all,es5.limma.mval.all,es6.limma.mval.all,es7.limma.mval.all,es8.limma.mval.all,es9.limma.mval.all)
+#100 samples
+limma.100.mval <- c(es1.limma.mval.100,es2.limma.mval.100,es3.limma.mval.100,es4.limma.mval.100,es5.limma.mval.100,es6.limma.mval.100,es7.limma.mval.100,es8.limma.mval.100,es9.limma.mval.100)
+#50 samples
+limma.50.mval <- c(es1.limma.mval.50,es2.limma.mval.50,es3.limma.mval.50,es4.limma.mval.50,es5.limma.mval.50,es6.limma.mval.50,es7.limma.mval.50,es8.limma.mval.50,es9.limma.mval.50)
+#40 samples
+limma.40.mval <- c(es1.limma.mval.40,es2.limma.mval.40,es3.limma.mval.40,es4.limma.mval.40,es5.limma.mval.40,es6.limma.mval.40,es7.limma.mval.40,es8.limma.mval.40,es9.limma.mval.40)
+#20 samples
+limma.20.mval <- c(es1.limma.mval.20,es2.limma.mval.20,es3.limma.mval.20,es4.limma.mval.20,es5.limma.mval.20,es6.limma.mval.20,es7.limma.mval.20,es8.limma.mval.20,es9.limma.mval.20)
+#10 samples
+limma.10.mval <- c(es1.limma.mval.10,es2.limma.mval.10,es3.limma.mval.10,es4.limma.mval.10,es5.limma.mval.10,es6.limma.mval.10,es7.limma.mval.10,es8.limma.mval.10,es9.limma.mval.10)
+
+#Gather and plot limma beta-val data
+#All samples
+limma.all.bval <- c(es1.limma.bval.all,es2.limma.bval.all,es3.limma.bval.all,es4.limma.bval.all,es5.limma.bval.all,es6.limma.bval.all,es7.limma.bval.all,es8.limma.bval.all,es9.limma.bval.all)
+#100 samples
+limma.100.bval <- c(es1.limma.bval.100,es2.limma.bval.100,es3.limma.bval.100,es4.limma.bval.100,es5.limma.bval.100,es6.limma.bval.100,es7.limma.bval.100,es8.limma.bval.100,es9.limma.bval.100)
+#50 samples
+limma.50.bval <- c(es1.limma.bval.50,es2.limma.bval.50,es3.limma.bval.50,es4.limma.bval.50,es5.limma.bval.50,es6.limma.bval.50,es7.limma.bval.50,es8.limma.bval.50,es9.limma.bval.50)
+#40 samples
+limma.40.bval <- c(es1.limma.bval.40,es2.limma.bval.40,es3.limma.bval.40,es4.limma.bval.40,es5.limma.bval.40,es6.limma.bval.40,es7.limma.bval.40,es8.limma.bval.40,es9.limma.bval.40)
+#20 samples
+limma.20.bval <- c(es1.limma.bval.20,es2.limma.bval.20,es3.limma.bval.20,es4.limma.bval.20,es5.limma.bval.20,es6.limma.bval.20,es7.limma.bval.20,es8.limma.bval.20,es9.limma.bval.20)
+#10 samples
+limma.10.bval <- c(es1.limma.bval.10,es2.limma.bval.10,es3.limma.bval.10,es4.limma.bval.10,es5.limma.bval.10,es6.limma.bval.10,es7.limma.bval.10,es8.limma.bval.10,es9.limma.bval.10)
+
+
+```
+
+```{r betareg_age_sim}
+library(betareg)
+library(lmtest)
+
+#Simulate power with betareg fitted on beta-values
+#All samples
+betareg_bvals.sim.fit <- function(sample_info, effect_matrix, alpha, samp_n = NULL) {
+  #Subset effect sizes and fit
+  #Isolate simulation data and convert to mvals
+  sims <- effect_matrix[,grepl("sim", colnames(effect_matrix))]
+  rownames(sims) <- effect_matrix$sample_names
+  pvals <- lapply(as.data.frame(sims), function(x) {
+    #Convert to a data frame
+    sim.mat <- data.frame(x = x,
+                          sample_names = as.character(rownames(sims)))
+    rownames(sim.mat) <- sim.mat$sample_names
+    #Check if a random sample is expected
+    ifelse(!is.null(samp_n), sim.mat.samp <- sim.mat %>% sample_n(., size = samp_n), sim.mat.samp <- sim.mat)
+    #Order the output to match with sample info
+    sim.mat.samp <- sim.mat.samp[order(sim.mat.samp$sample_names),]
+    #Sample info for design matrix
+    sim.samp_info <- sample_info[sample_info$Sample_ID %in% sim.mat.samp$sample_names,]
+    #Convert to a character vector
+    sim.samp_info$Sample_ID <- as.character(sim.samp_info$Sample_ID)
+    #Order the sample info to match the simulation matrix values
+    sim.samp_info <- sim.samp_info[order(sim.samp_info$Sample_ID),]
+    #Sanity check
+    stopifnot(sim.mat.samp$sample_names == sim.samp_info$Sample_ID)
+    #Check if both genders are included in the sample and if not, resample
+    while (!"Male" %in% sim.samp_info$Sex | !"Female" %in% sim.samp_info$Sex) {
+      sim.mat.samp = sim.mat %>% sample_n(., size = samp_n)
+      #Order the output to match with sample info
+      sim.mat.samp = sim.mat.samp[order(sim.mat.samp$sample_names),]
+      #Sample info for design matrix
+      sim.samp_info = sample_info[sample_info$Sample_ID %in% sim.mat.samp$sample_names,]
+      #Convert to a character vector
+      sim.samp_info$Sample_ID = as.character(sim.samp_info$Sample_ID)
+      #Order the sample info to match the simulation matrix values
+      sim.samp_info = sim.samp_info[order(sim.samp_info$Sample_ID),]
+      #Sanity check
+      stopifnot(sim.mat.samp$sample_names == sim.samp_info$Sample_ID)
+    }
+    sim.age <- as.character(sim.samp_info$Age) %>% as.numeric(.)
+    sim.sex <- factor(sim.samp_info$Sex)
+    br_data <- data.frame(x = sim.mat.samp[,-2],
+                          age = sim.age,
+                          sex = sim.sex)
+    br.fit <- betareg(x ~ age + sex, data = br_data, link = "logit", link.phi = "log")
+    br.fit.reduced <- betareg(x ~ sex, data = br_data, link = "logit", link.phi = "log")
+    br.lrt <- lrtest(br.fit.reduced, br.fit)
+    pval <- ifelse(br.lrt$`Pr(>Chisq)`[2] < alpha, 1, 0)
+  })
+  return(sum(unlist(pvals))/1000)
+}
+
+#Panel A - all samples
+es1.betareg.bval.all <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical)
+es2.betareg.bval.all <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical)
+es3.betareg.bval.all <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical)
+es4.betareg.bval.all <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical)
+es5.betareg.bval.all <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical)
+es6.betareg.bval.all <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical)
+es7.betareg.bval.all <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical)
+es8.betareg.bval.all <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical)
+es9.betareg.bval.all <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical)
+
+#PanelB - 100 samples
+es1.betareg.bval.100 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 100)
+es2.betareg.bval.100 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 100)
+es3.betareg.bval.100 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 100)
+es4.betareg.bval.100 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 100)
+es5.betareg.bval.100 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 100)
+es6.betareg.bval.100 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 100)
+es7.betareg.bval.100 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 100)
+es8.betareg.bval.100 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 100)
+es9.betareg.bval.100 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 100)
+
+#PanelC - 50 samples
+es1.betareg.bval.50 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 50)
+es2.betareg.bval.50 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 50)
+es3.betareg.bval.50 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 50)
+es4.betareg.bval.50 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 50)
+es5.betareg.bval.50 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 50)
+es6.betareg.bval.50 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 50)
+es7.betareg.bval.50 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 50)
+es8.betareg.bval.50 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 50)
+es9.betareg.bval.50 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 50)
+
+#PanelD - 40 samples
+es1.betareg.bval.40 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 40)
+es2.betareg.bval.40 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 40)
+es3.betareg.bval.40 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 40)
+es4.betareg.bval.40 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 40)
+es5.betareg.bval.40 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 40)
+es6.betareg.bval.40 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 40)
+es7.betareg.bval.40 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 40)
+es8.betareg.bval.40 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 40)
+es9.betareg.bval.40 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 40)
+
+#PanelE - 20 samples
+es1.betareg.bval.20 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 20)
+es2.betareg.bval.20 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 20)
+es3.betareg.bval.20 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 20)
+es4.betareg.bval.20 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 20)
+es5.betareg.bval.20 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 20)
+es6.betareg.bval.20 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 20)
+es7.betareg.bval.20 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 20)
+es8.betareg.bval.20 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 20)
+es9.betareg.bval.20 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 20)
+
+#PanelF - 10 samples
+es1.betareg.bval.10 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 10)
+es2.betareg.bval.10 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 10)
+es3.betareg.bval.10 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 10)
+es4.betareg.bval.10 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 10)
+es5.betareg.bval.10 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 10)
+es6.betareg.bval.10 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 10)
+es7.betareg.bval.10 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 10)
+es8.betareg.bval.10 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 10)
+es9.betareg.bval.10 <- betareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 10)
+
+#Gather and plot betareg beta-val data
+#All samples
+betareg.all.bval <- c(es1.betareg.bval.all,es2.betareg.bval.all,es3.betareg.bval.all,es4.betareg.bval.all,es5.betareg.bval.all,es6.betareg.bval.all,es7.betareg.bval.all,es8.betareg.bval.all,es9.betareg.bval.all)
+#100 samples
+betareg.100.bval <- c(es1.betareg.bval.100,es2.betareg.bval.100,es3.betareg.bval.100,es4.betareg.bval.100,es5.betareg.bval.100,es6.betareg.bval.100,es7.betareg.bval.100,es8.betareg.bval.100,es9.betareg.bval.100)
+#50 samples
+betareg.50.bval <- c(es1.betareg.bval.50,es2.betareg.bval.50,es3.betareg.bval.50,es4.betareg.bval.50,es5.betareg.bval.50,es6.betareg.bval.50,es7.betareg.bval.50,es8.betareg.bval.50,es9.betareg.bval.50)
+#40 samples
+betareg.40.bval <- c(es1.betareg.bval.40,es2.betareg.bval.40,es3.betareg.bval.40,es4.betareg.bval.40,es5.betareg.bval.40,es6.betareg.bval.40,es7.betareg.bval.40,es8.betareg.bval.40,es9.betareg.bval.40)
+#20 samples
+betareg.20.bval <- c(es1.betareg.bval.20,es2.betareg.bval.20,es3.betareg.bval.20,es4.betareg.bval.20,es5.betareg.bval.20,es6.betareg.bval.20,es7.betareg.bval.20,es8.betareg.bval.20,es9.betareg.bval.20)
+#10 samples
+betareg.10.bval <- c(es1.betareg.bval.10,es2.betareg.bval.10,es3.betareg.bval.10,es4.betareg.bval.10,es5.betareg.bval.10,es6.betareg.bval.10,es7.betareg.bval.10,es8.betareg.bval.10,es9.betareg.bval.10)
+
+```
+
+```{r mebetareg_age_sim}
+library(glmmTMB)
+library(parallel)
+
+#Simulate power with mebetareg fitted on beta-values
+#All samples
+mebetareg_bvals.sim.fit <- function(sample_info, effect_matrix, alpha, samp_n = NULL) {
+  #Subset effect sizes and fit
+  #Isolate simulation data and convert to mvals
+  sims <- effect_matrix[,grepl("sim", colnames(effect_matrix))]
+  rownames(sims) <- effect_matrix$sample_names
+  pvals <- mclapply(as.data.frame(sims), function(x) {
+    #Convert to a data frame
+    sim.mat <- data.frame(x = x,
+                          sample_names = as.character(rownames(sims)))
+    rownames(sim.mat) <- sim.mat$sample_names
+    #Check if a random sample is expected
+    ifelse(!is.null(samp_n), sim.mat.samp <- sim.mat %>% sample_n(., size = samp_n), sim.mat.samp <- sim.mat)
+    #Order the output to match with sample info
+    sim.mat.samp <- sim.mat.samp[order(sim.mat.samp$sample_names),]
+    #Sample info for design matrix
+    sim.samp_info <- sample_info[sample_info$Sample_ID %in% sim.mat.samp$sample_names,]
+    #Convert to a character vector
+    sim.samp_info$Sample_ID <- as.character(sim.samp_info$Sample_ID)
+    #Order the sample info to match the simulation matrix values
+    sim.samp_info <- sim.samp_info[order(sim.samp_info$Sample_ID),]
+    #Sanity check
+    stopifnot(sim.mat.samp$sample_names == sim.samp_info$Sample_ID)
+    #Check if both genders are included in the sample and if not, resample
+    while (!"Male" %in% sim.samp_info$Sex | !"Female" %in% sim.samp_info$Sex) {
+      sim.mat.samp = sim.mat %>% sample_n(., size = samp_n)
+      #Order the output to match with sample info
+      sim.mat.samp = sim.mat.samp[order(sim.mat.samp$sample_names),]
+      #Sample info for design matrix
+      sim.samp_info = sample_info[sample_info$Sample_ID %in% sim.mat.samp$sample_names,]
+      #Convert to a character vector
+      sim.samp_info$Sample_ID = as.character(sim.samp_info$Sample_ID)
+      #Order the sample info to match the simulation matrix values
+      sim.samp_info = sim.samp_info[order(sim.samp_info$Sample_ID),]
+      #Sanity check
+      stopifnot(sim.mat.samp$sample_names == sim.samp_info$Sample_ID)
+    }
+    sim.age <- as.character(sim.samp_info$Age) %>% as.numeric(.)
+    sim.sex <- factor(sim.samp_info$Sex)
+    sim.slide <- factor(sim.samp_info$Slide)
+    mebr_data <- data.frame(x = sim.mat.samp[,-2],
+                          age = sim.age,
+                          sex = sim.sex,
+                          slide = sim.slide)
+    mebr.fit <- glmmTMB(x ~ age + sex + (1 | slide), data = mebr_data, family = list(family = "beta", link = "logit"), se = T)
+    mebr.lrt <- drop1(mebr.fit, scope = "age", test = "Chisq")
+    pval <- ifelse(mebr.lrt$`Pr(>Chi)`[2] < alpha, 1, 0)
+  }, mc.preschedule = F, mc.cores = 28)
+  return(pvals)
+}
+
+#Panel A - all samples
+es1.mebetareg.bval.all <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical)
+es2.mebetareg.bval.all <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical)
+es3.mebetareg.bval.all <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical)
+es4.mebetareg.bval.all <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical)
+es5.mebetareg.bval.all <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical)
+es6.mebetareg.bval.all <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical)
+es7.mebetareg.bval.all <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical)
+es8.mebetareg.bval.all <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical)
+es9.mebetareg.bval.all <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical)
+
+#PanelB - 100 samples
+es1.mebetareg.bval.100 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 100)
+es2.mebetareg.bval.100 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 100)
+es3.mebetareg.bval.100 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 100)
+es4.mebetareg.bval.100 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 100)
+es5.mebetareg.bval.100 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 100)
+es6.mebetareg.bval.100 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 100)
+es7.mebetareg.bval.100 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 100)
+es8.mebetareg.bval.100 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 100)
+es9.mebetareg.bval.100 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 100)
+
+#PanelC - 50 samples
+es1.mebetareg.bval.50 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 50)
+es2.mebetareg.bval.50 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 50)
+es3.mebetareg.bval.50 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 50)
+es4.mebetareg.bval.50 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 50)
+es5.mebetareg.bval.50 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 50)
+es6.mebetareg.bval.50 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 50)
+es7.mebetareg.bval.50 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 50)
+es8.mebetareg.bval.50 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 50)
+es9.mebetareg.bval.50 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 50)
+
+#PanelD - 40 samples
+es1.mebetareg.bval.40 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 40)
+es2.mebetareg.bval.40 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 40)
+es3.mebetareg.bval.40 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 40)
+es4.mebetareg.bval.40 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 40)
+es5.mebetareg.bval.40 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 40)
+es6.mebetareg.bval.40 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 40)
+es7.mebetareg.bval.40 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 40)
+es8.mebetareg.bval.40 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 40)
+es9.mebetareg.bval.40 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 40)
+
+#PanelE - 20 samples
+es1.mebetareg.bval.20 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 20)
+es2.mebetareg.bval.20 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 20)
+es3.mebetareg.bval.20 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 20)
+es4.mebetareg.bval.20 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 20)
+es5.mebetareg.bval.20 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 20)
+es6.mebetareg.bval.20 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 20)
+es7.mebetareg.bval.20 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 20)
+es8.mebetareg.bval.20 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 20)
+es9.mebetareg.bval.20 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 20)
+
+#PanelF - 10 samples
+es1.mebetareg.bval.10 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 10)
+es2.mebetareg.bval.10 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 10)
+es3.mebetareg.bval.10 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 10)
+es4.mebetareg.bval.10 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 10)
+es5.mebetareg.bval.10 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 10)
+es6.mebetareg.bval.10 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 10)
+es7.mebetareg.bval.10 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 10)
+es8.mebetareg.bval.10 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 10)
+es9.mebetareg.bval.10 <- mebetareg_bvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 10)
+
+#Load in the raw data image for post-processing to filter for errors
+load("~/secondary_projects/research/ISMB_poster_2018/analysis/glmmTMB_mebr_raw_sim_output.RData")
+
+#Filter out NA and Errors from data
+#All
+es1.mebetareg.bval.all.p <- sum(unlist(es1.mebetareg.bval.all)) / 1000
+es2.mebetareg.bval.all.p <- sum(unlist(es2.mebetareg.bval.all)) / 1000
+es3.mebetareg.bval.all.p <- sum(unlist(es3.mebetareg.bval.all)) / 1000
+es4.mebetareg.bval.all.p <- sum(unlist(es4.mebetareg.bval.all)) / 1000
+es5.mebetareg.bval.all.p <- sum(unlist(es5.mebetareg.bval.all)) / 1000
+es6.mebetareg.bval.all.p <- sum(unlist(es6.mebetareg.bval.all)) / 1000
+es7.mebetareg.bval.all.p <- sum(unlist(es7.mebetareg.bval.all)) / 1000
+es8.mebetareg.bval.all.p <- sum(unlist(es8.mebetareg.bval.all)) / 1000
+es9.mebetareg.bval.all.p <- sum(as.numeric(unlist(es9.mebetareg.bval.all)[which(unlist(lapply(es9.mebetareg.bval.all, function(x) x %in% c(0,1))))])) / length(unlist(es9.mebetareg.bval.all)[which(unlist(lapply(es9.mebetareg.bval.all, function(x) x %in% c(0,1))))])
+
+#100
+es1.mebetareg.bval.100.p <- sum(unlist(es1.mebetareg.bval.100)) / 1000
+es2.mebetareg.bval.100.p <- sum(unlist(es2.mebetareg.bval.100)) / 1000
+es3.mebetareg.bval.100.p <- sum(unlist(es3.mebetareg.bval.100)) / 1000
+es4.mebetareg.bval.100.p <- sum(unlist(es4.mebetareg.bval.100)) / 1000
+es5.mebetareg.bval.100.p <- sum(unlist(es5.mebetareg.bval.100)) / 1000
+es6.mebetareg.bval.100.p <- sum(unlist(es6.mebetareg.bval.100)) / 1000
+es7.mebetareg.bval.100.p <- sum(unlist(es7.mebetareg.bval.100)) / 1000
+es8.mebetareg.bval.100.p <- sum(unlist(es8.mebetareg.bval.100)) / 1000
+es9.mebetareg.bval.100.p <- sum(unlist(es9.mebetareg.bval.100)) / 1000
+
+#50
+es1.mebetareg.bval.50.p <- sum(unlist(es1.mebetareg.bval.50)) / 1000
+es2.mebetareg.bval.50.p <- sum(unlist(es2.mebetareg.bval.50)) / 1000
+es3.mebetareg.bval.50.p <- sum(unlist(es3.mebetareg.bval.50)) / 1000
+es4.mebetareg.bval.50.p <- sum(unlist(es4.mebetareg.bval.50)) / 1000
+es5.mebetareg.bval.50.p <- sum(as.numeric(unlist(es5.mebetareg.bval.50)[which(unlist(lapply(es5.mebetareg.bval.50, function(x) x %in% c(0,1))))])) / length(unlist(es5.mebetareg.bval.50)[which(unlist(lapply(es5.mebetareg.bval.50, function(x) x %in% c(0,1))))])
+es6.mebetareg.bval.50.p <- sum(unlist(es6.mebetareg.bval.50)) / 1000
+es7.mebetareg.bval.50.p <- sum(unlist(es7.mebetareg.bval.50)) / 1000
+es8.mebetareg.bval.50.p <- sum(unlist(es8.mebetareg.bval.50)) / 1000
+es9.mebetareg.bval.50.p <- sum(unlist(es9.mebetareg.bval.50)) / 1000
+
+#40
+es1.mebetareg.bval.40.p <- sum(unlist(es1.mebetareg.bval.40)) / 1000
+es2.mebetareg.bval.40.p <- sum(unlist(es2.mebetareg.bval.40)) / 1000
+es3.mebetareg.bval.40.p <- sum(unlist(es3.mebetareg.bval.40)) / 1000
+es4.mebetareg.bval.40.p <- sum(unlist(es4.mebetareg.bval.40)) / 1000
+es5.mebetareg.bval.40.p <- sum(unlist(es5.mebetareg.bval.40)) / 1000
+es6.mebetareg.bval.40.p <- sum(unlist(es6.mebetareg.bval.40)) / 1000
+es7.mebetareg.bval.40.p <- sum(unlist(es7.mebetareg.bval.40)) / 1000
+es8.mebetareg.bval.40.p <- sum(unlist(es8.mebetareg.bval.40)) / 1000
+es9.mebetareg.bval.40.p <- sum(unlist(es9.mebetareg.bval.40)) / 1000
+
+#20
+es1.mebetareg.bval.20.p <- sum(as.numeric(unlist(es1.mebetareg.bval.20)[which(unlist(lapply(es1.mebetareg.bval.20, function(x) x %in% c(0,1))))])) / length(unlist(es1.mebetareg.bval.20)[which(unlist(lapply(es1.mebetareg.bval.20, function(x) x %in% c(0,1))))])
+es2.mebetareg.bval.20.p <- sum(as.numeric(unlist(es2.mebetareg.bval.20)[which(unlist(lapply(es2.mebetareg.bval.20, function(x) x %in% c(0,1))))])) / length(unlist(es2.mebetareg.bval.20)[which(unlist(lapply(es2.mebetareg.bval.20, function(x) x %in% c(0,1))))])
+es3.mebetareg.bval.20.p <- sum(as.numeric(unlist(es3.mebetareg.bval.20)[which(unlist(lapply(es3.mebetareg.bval.20, function(x) x %in% c(0,1))))])) / length(unlist(es3.mebetareg.bval.20)[which(unlist(lapply(es3.mebetareg.bval.20, function(x) x %in% c(0,1))))])
+es4.mebetareg.bval.20.p <- sum(as.numeric(unlist(es4.mebetareg.bval.20)[which(unlist(lapply(es4.mebetareg.bval.20, function(x) x %in% c(0,1))))])) / length(unlist(es4.mebetareg.bval.20)[which(unlist(lapply(es4.mebetareg.bval.20, function(x) x %in% c(0,1))))])
+es5.mebetareg.bval.20.p <- sum(as.numeric(unlist(es5.mebetareg.bval.20)[which(unlist(lapply(es5.mebetareg.bval.20, function(x) x %in% c(0,1))))])) / length(unlist(es5.mebetareg.bval.20)[which(unlist(lapply(es5.mebetareg.bval.20, function(x) x %in% c(0,1))))])
+es6.mebetareg.bval.20.p <- sum(as.numeric(unlist(es6.mebetareg.bval.20)[which(unlist(lapply(es6.mebetareg.bval.20, function(x) x %in% c(0,1))))])) / length(unlist(es6.mebetareg.bval.20)[which(unlist(lapply(es6.mebetareg.bval.20, function(x) x %in% c(0,1))))])
+es7.mebetareg.bval.20.p <- sum(as.numeric(unlist(es7.mebetareg.bval.20)[which(unlist(lapply(es7.mebetareg.bval.20, function(x) x %in% c(0,1))))])) / length(unlist(es7.mebetareg.bval.20)[which(unlist(lapply(es7.mebetareg.bval.20, function(x) x %in% c(0,1))))])
+es8.mebetareg.bval.20.p <- sum(as.numeric(unlist(es8.mebetareg.bval.20)[which(unlist(lapply(es8.mebetareg.bval.20, function(x) x %in% c(0,1))))])) / length(unlist(es8.mebetareg.bval.20)[which(unlist(lapply(es8.mebetareg.bval.20, function(x) x %in% c(0,1))))])
+es9.mebetareg.bval.20.p <- sum(as.numeric(unlist(es9.mebetareg.bval.20)[which(unlist(lapply(es9.mebetareg.bval.20, function(x) x %in% c(0,1))))])) / length(unlist(es9.mebetareg.bval.20)[which(unlist(lapply(es9.mebetareg.bval.20, function(x) x %in% c(0,1))))])
+
+#10
+es1.mebetareg.bval.10.p <- sum(as.numeric(unlist(es1.mebetareg.bval.10)[which(unlist(lapply(es1.mebetareg.bval.10, function(x) x %in% c(0,1))))])) / length(unlist(es1.mebetareg.bval.10)[which(unlist(lapply(es1.mebetareg.bval.10, function(x) x %in% c(0,1))))])
+es2.mebetareg.bval.10.p <- sum(as.numeric(unlist(es2.mebetareg.bval.10)[which(unlist(lapply(es2.mebetareg.bval.10, function(x) x %in% c(0,1))))])) / length(unlist(es2.mebetareg.bval.10)[which(unlist(lapply(es2.mebetareg.bval.10, function(x) x %in% c(0,1))))])
+es3.mebetareg.bval.10.p <- sum(as.numeric(unlist(es3.mebetareg.bval.10)[which(unlist(lapply(es3.mebetareg.bval.10, function(x) x %in% c(0,1))))])) / length(unlist(es3.mebetareg.bval.10)[which(unlist(lapply(es3.mebetareg.bval.10, function(x) x %in% c(0,1))))])
+es4.mebetareg.bval.10.p <- sum(as.numeric(unlist(es4.mebetareg.bval.10)[which(unlist(lapply(es4.mebetareg.bval.10, function(x) x %in% c(0,1))))])) / length(unlist(es4.mebetareg.bval.10)[which(unlist(lapply(es4.mebetareg.bval.10, function(x) x %in% c(0,1))))])
+es5.mebetareg.bval.10.p <- sum(as.numeric(unlist(es5.mebetareg.bval.10)[which(unlist(lapply(es5.mebetareg.bval.10, function(x) x %in% c(0,1))))])) / length(unlist(es5.mebetareg.bval.10)[which(unlist(lapply(es5.mebetareg.bval.10, function(x) x %in% c(0,1))))])
+es6.mebetareg.bval.10.p <- sum(as.numeric(unlist(es6.mebetareg.bval.10)[which(unlist(lapply(es6.mebetareg.bval.10, function(x) x %in% c(0,1))))])) / length(unlist(es6.mebetareg.bval.10)[which(unlist(lapply(es6.mebetareg.bval.10, function(x) x %in% c(0,1))))])
+es7.mebetareg.bval.10.p <- sum(as.numeric(unlist(es7.mebetareg.bval.10)[which(unlist(lapply(es7.mebetareg.bval.10, function(x) x %in% c(0,1))))])) / length(unlist(es7.mebetareg.bval.10)[which(unlist(lapply(es7.mebetareg.bval.10, function(x) x %in% c(0,1))))])
+es8.mebetareg.bval.10.p <- sum(as.numeric(unlist(es8.mebetareg.bval.10)[which(unlist(lapply(es8.mebetareg.bval.10, function(x) x %in% c(0,1))))])) / length(unlist(es8.mebetareg.bval.10)[which(unlist(lapply(es8.mebetareg.bval.10, function(x) x %in% c(0,1))))])
+es9.mebetareg.bval.10.p <- sum(as.numeric(unlist(es9.mebetareg.bval.10)[which(unlist(lapply(es9.mebetareg.bval.10, function(x) x %in% c(0,1))))])) / length(unlist(es9.mebetareg.bval.10)[which(unlist(lapply(es9.mebetareg.bval.10, function(x) x %in% c(0,1))))])
+
+#Gather and plot mebetareg beta-val data
+#All samples
+mebetareg.all.bval <- c(es1.mebetareg.bval.all.p,es2.mebetareg.bval.all.p,es3.mebetareg.bval.all.p,es4.mebetareg.bval.all.p,es5.mebetareg.bval.all.p,es6.mebetareg.bval.all.p,es7.mebetareg.bval.all.p,es8.mebetareg.bval.all.p,es9.mebetareg.bval.all.p)
+#100 samples
+mebetareg.100.bval <- c(es1.mebetareg.bval.100.p,es2.mebetareg.bval.100.p,es3.mebetareg.bval.100.p,es4.mebetareg.bval.100.p,es5.mebetareg.bval.100.p,es6.mebetareg.bval.100.p,es7.mebetareg.bval.100.p,es8.mebetareg.bval.100.p,es9.mebetareg.bval.100.p)
+#50 samples
+mebetareg.50.bval <- c(es1.mebetareg.bval.50.p,es2.mebetareg.bval.50.p,es3.mebetareg.bval.50.p,es4.mebetareg.bval.50.p,es5.mebetareg.bval.50.p,es6.mebetareg.bval.50.p,es7.mebetareg.bval.50.p,es8.mebetareg.bval.50.p,es9.mebetareg.bval.50.p)
+#40 samples
+mebetareg.40.bval <- c(es1.mebetareg.bval.40.p,es2.mebetareg.bval.40.p,es3.mebetareg.bval.40.p,es4.mebetareg.bval.40.p,es5.mebetareg.bval.40.p,es6.mebetareg.bval.40.p,es7.mebetareg.bval.40.p,es8.mebetareg.bval.40.p,es9.mebetareg.bval.40.p)
+#20 samples
+mebetareg.20.bval <- c(es1.mebetareg.bval.20.p,es2.mebetareg.bval.20.p,es3.mebetareg.bval.20.p,es4.mebetareg.bval.20.p,es5.mebetareg.bval.20.p,es6.mebetareg.bval.20.p,es7.mebetareg.bval.20.p,es8.mebetareg.bval.20.p,es9.mebetareg.bval.20.p)
+#10 samples
+mebetareg.10.bval <- c(es1.mebetareg.bval.10.p,es2.mebetareg.bval.10.p,es3.mebetareg.bval.10.p,es4.mebetareg.bval.10.p,es5.mebetareg.bval.10.p,es6.mebetareg.bval.10.p,es7.mebetareg.bval.10.p,es8.mebetareg.bval.10.p,es9.mebetareg.bval.10.p)
+
+```
+
+```{r mebetareg_age_sim}
+library(glmmTMB)
+library(parallel)
+
+#Simulate power with mebetareg fitted on beta-values
+#All samples
+melinreg_mvals.sim.fit <- function(sample_info, effect_matrix, alpha, samp_n = NULL) {
+  #Subset effect sizes and fit
+  #Isolate simulation data and convert to mvals
+  sims <- logit2(effect_matrix[,grepl("sim", colnames(effect_matrix))])
+  rownames(sims) <- effect_matrix$sample_names
+  pvals <- mclapply(as.data.frame(sims), function(x) {
+    #Convert to a data frame
+    sim.mat <- data.frame(x = x,
+                          sample_names = as.character(rownames(sims)))
+    rownames(sim.mat) <- sim.mat$sample_names
+    #Check if a random sample is expected
+    ifelse(!is.null(samp_n), sim.mat.samp <- sim.mat %>% sample_n(., size = samp_n), sim.mat.samp <- sim.mat)
+    #Order the output to match with sample info
+    sim.mat.samp <- sim.mat.samp[order(sim.mat.samp$sample_names),]
+    #Sample info for design matrix
+    sim.samp_info <- sample_info[sample_info$Sample_ID %in% sim.mat.samp$sample_names,]
+    #Convert to a character vector
+    sim.samp_info$Sample_ID <- as.character(sim.samp_info$Sample_ID)
+    #Order the sample info to match the simulation matrix values
+    sim.samp_info <- sim.samp_info[order(sim.samp_info$Sample_ID),]
+    #Sanity check
+    stopifnot(sim.mat.samp$sample_names == sim.samp_info$Sample_ID)
+    #Check if both genders are included in the sample and if not, resample
+    while (!"Male" %in% sim.samp_info$Sex | !"Female" %in% sim.samp_info$Sex) {
+      sim.mat.samp = sim.mat %>% sample_n(., size = samp_n)
+      #Order the output to match with sample info
+      sim.mat.samp = sim.mat.samp[order(sim.mat.samp$sample_names),]
+      #Sample info for design matrix
+      sim.samp_info = sample_info[sample_info$Sample_ID %in% sim.mat.samp$sample_names,]
+      #Convert to a character vector
+      sim.samp_info$Sample_ID = as.character(sim.samp_info$Sample_ID)
+      #Order the sample info to match the simulation matrix values
+      sim.samp_info = sim.samp_info[order(sim.samp_info$Sample_ID),]
+      #Sanity check
+      stopifnot(sim.mat.samp$sample_names == sim.samp_info$Sample_ID)
+    }
+    sim.age <- as.character(sim.samp_info$Age) %>% as.numeric(.)
+    sim.sex <- factor(sim.samp_info$Sex)
+    sim.slide <- factor(sim.samp_info$Slide)
+    melr_data <- data.frame(x = sim.mat.samp[,-2],
+                          age = sim.age,
+                          sex = sim.sex,
+                          slide = sim.slide)
+    melr.fit <- glmmTMB(x ~ age + sex + (1 | slide), data = melr_data, family = "gaussian", se = T)
+    melr.lrt <- drop1(melr.fit, scope = "age", test = "Chisq")
+    pval <- ifelse(melr.lrt$`Pr(>Chi)`[2] < alpha, 1, 0)
+  }, mc.preschedule = F, mc.cores = 28)
+  return(sum(unlist(pvals))/1000)
+}
+
+#Panel A - all samples
+es1.melinreg.mval.all <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical)
+es2.melinreg.mval.all <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical)
+es3.melinreg.mval.all <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical)
+es4.melinreg.mval.all <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical)
+es5.melinreg.mval.all <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical)
+es6.melinreg.mval.all <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical)
+es7.melinreg.mval.all <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical)
+es8.melinreg.mval.all <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical)
+es9.melinreg.mval.all <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical)
+
+#PanelB - 100 samples
+es1.melinreg.mval.100 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 100)
+es2.melinreg.mval.100 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 100)
+es3.melinreg.mval.100 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 100)
+es4.melinreg.mval.100 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 100)
+es5.melinreg.mval.100 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 100)
+es6.melinreg.mval.100 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 100)
+es7.melinreg.mval.100 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 100)
+es8.melinreg.mval.100 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 100)
+es9.melinreg.mval.100 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 100)
+
+#PanelC - 50 samples
+es1.melinreg.mval.50 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 50)
+es2.melinreg.mval.50 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 50)
+es3.melinreg.mval.50 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 50)
+es4.melinreg.mval.50 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 50)
+es5.melinreg.mval.50 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 50)
+es6.melinreg.mval.50 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 50)
+es7.melinreg.mval.50 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 50)
+es8.melinreg.mval.50 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 50)
+es9.melinreg.mval.50 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 50)
+
+#PanelD - 40 samples
+es1.melinreg.mval.40 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 40)
+es2.melinreg.mval.40 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 40)
+es3.melinreg.mval.40 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 40)
+es4.melinreg.mval.40 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 40)
+es5.melinreg.mval.40 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 40)
+es6.melinreg.mval.40 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 40)
+es7.melinreg.mval.40 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 40)
+es8.melinreg.mval.40 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 40)
+es9.melinreg.mval.40 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 40)
+
+#PanelE - 20 samples
+es1.melinreg.mval.20 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 20)
+es2.melinreg.mval.20 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 20)
+es3.melinreg.mval.20 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 20)
+es4.melinreg.mval.20 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 20)
+es5.melinreg.mval.20 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 20)
+es6.melinreg.mval.20 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 20)
+es7.melinreg.mval.20 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 20)
+es8.melinreg.mval.20 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 20)
+es9.melinreg.mval.20 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 20)
+
+#PanelF - 10 samples
+es1.melinreg.mval.10 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci1, alpha_empirical, 10)
+es2.melinreg.mval.10 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci2, alpha_empirical, 10)
+es3.melinreg.mval.10 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci3, alpha_empirical, 10)
+es4.melinreg.mval.10 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci4, alpha_empirical, 10)
+es5.melinreg.mval.10 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci5, alpha_empirical, 10)
+es6.melinreg.mval.10 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci6, alpha_empirical, 10)
+es7.melinreg.mval.10 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci7, alpha_empirical, 10)
+es8.melinreg.mval.10 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci8, alpha_empirical, 10)
+es9.melinreg.mval.10 <- melinreg_mvals.sim.fit(samp_info.pd, br.fit.sim.age.beta.loci9, alpha_empirical, 10)
+
+#Gather and plot melinreg beta-val data
+load("~/secondary_projects/research/ISMB_poster_2018/analysis/glmmTMB_melr_raw_sim_output.RData")
+
+#20
+es1.melinreg.mval.20.p <- sum(as.numeric(unlist(es1.melinreg.mval.20)[which(unlist(lapply(es1.melinreg.mval.20, function(x) x %in% c(0,1))))])) / length(unlist(es1.melinreg.mval.20)[which(unlist(lapply(es1.melinreg.mval.20, function(x) x %in% c(0,1))))])
+es2.melinreg.mval.20.p <- sum(as.numeric(unlist(es2.melinreg.mval.20)[which(unlist(lapply(es2.melinreg.mval.20, function(x) x %in% c(0,1))))])) / length(unlist(es2.melinreg.mval.20)[which(unlist(lapply(es2.melinreg.mval.20, function(x) x %in% c(0,1))))])
+es3.melinreg.mval.20.p <- sum(as.numeric(unlist(es3.melinreg.mval.20)[which(unlist(lapply(es3.melinreg.mval.20, function(x) x %in% c(0,1))))])) / length(unlist(es3.melinreg.mval.20)[which(unlist(lapply(es3.melinreg.mval.20, function(x) x %in% c(0,1))))])
+es4.melinreg.mval.20.p <- sum(as.numeric(unlist(es4.melinreg.mval.20)[which(unlist(lapply(es4.melinreg.mval.20, function(x) x %in% c(0,1))))])) / length(unlist(es4.melinreg.mval.20)[which(unlist(lapply(es4.melinreg.mval.20, function(x) x %in% c(0,1))))])
+es5.melinreg.mval.20.p <- sum(as.numeric(unlist(es5.melinreg.mval.20)[which(unlist(lapply(es5.melinreg.mval.20, function(x) x %in% c(0,1))))])) / length(unlist(es5.melinreg.mval.20)[which(unlist(lapply(es5.melinreg.mval.20, function(x) x %in% c(0,1))))])
+es6.melinreg.mval.20.p <- sum(as.numeric(unlist(es6.melinreg.mval.20)[which(unlist(lapply(es6.melinreg.mval.20, function(x) x %in% c(0,1))))])) / length(unlist(es6.melinreg.mval.20)[which(unlist(lapply(es6.melinreg.mval.20, function(x) x %in% c(0,1))))])
+es7.melinreg.mval.20.p <- sum(as.numeric(unlist(es7.melinreg.mval.20)[which(unlist(lapply(es7.melinreg.mval.20, function(x) x %in% c(0,1))))])) / length(unlist(es7.melinreg.mval.20)[which(unlist(lapply(es7.melinreg.mval.20, function(x) x %in% c(0,1))))])
+es8.melinreg.mval.20.p <- sum(as.numeric(unlist(es8.melinreg.mval.20)[which(unlist(lapply(es8.melinreg.mval.20, function(x) x %in% c(0,1))))])) / length(unlist(es8.melinreg.mval.20)[which(unlist(lapply(es8.melinreg.mval.20, function(x) x %in% c(0,1))))])
+es9.melinreg.mval.20.p <- sum(as.numeric(unlist(es9.melinreg.mval.20)[which(unlist(lapply(es9.melinreg.mval.20, function(x) x %in% c(0,1))))])) / length(unlist(es9.melinreg.mval.20)[which(unlist(lapply(es9.melinreg.mval.20, function(x) x %in% c(0,1))))])
+
+#10
+es1.melinreg.mval.10.p <- sum(as.numeric(unlist(es1.melinreg.mval.10)[which(unlist(lapply(es1.melinreg.mval.10, function(x) x %in% c(0,1))))])) / length(unlist(es1.melinreg.mval.10)[which(unlist(lapply(es1.melinreg.mval.10, function(x) x %in% c(0,1))))])
+es2.melinreg.mval.10.p <- sum(as.numeric(unlist(es2.melinreg.mval.10)[which(unlist(lapply(es2.melinreg.mval.10, function(x) x %in% c(0,1))))])) / length(unlist(es2.melinreg.mval.10)[which(unlist(lapply(es2.melinreg.mval.10, function(x) x %in% c(0,1))))])
+es3.melinreg.mval.10.p <- sum(as.numeric(unlist(es3.melinreg.mval.10)[which(unlist(lapply(es3.melinreg.mval.10, function(x) x %in% c(0,1))))])) / length(unlist(es3.melinreg.mval.10)[which(unlist(lapply(es3.melinreg.mval.10, function(x) x %in% c(0,1))))])
+es4.melinreg.mval.10.p <- sum(as.numeric(unlist(es4.melinreg.mval.10)[which(unlist(lapply(es4.melinreg.mval.10, function(x) x %in% c(0,1))))])) / length(unlist(es4.melinreg.mval.10)[which(unlist(lapply(es4.melinreg.mval.10, function(x) x %in% c(0,1))))])
+es5.melinreg.mval.10.p <- sum(as.numeric(unlist(es5.melinreg.mval.10)[which(unlist(lapply(es5.melinreg.mval.10, function(x) x %in% c(0,1))))])) / length(unlist(es5.melinreg.mval.10)[which(unlist(lapply(es5.melinreg.mval.10, function(x) x %in% c(0,1))))])
+es6.melinreg.mval.10.p <- sum(as.numeric(unlist(es6.melinreg.mval.10)[which(unlist(lapply(es6.melinreg.mval.10, function(x) x %in% c(0,1))))])) / length(unlist(es6.melinreg.mval.10)[which(unlist(lapply(es6.melinreg.mval.10, function(x) x %in% c(0,1))))])
+es7.melinreg.mval.10.p <- sum(as.numeric(unlist(es7.melinreg.mval.10)[which(unlist(lapply(es7.melinreg.mval.10, function(x) x %in% c(0,1))))])) / length(unlist(es7.melinreg.mval.10)[which(unlist(lapply(es7.melinreg.mval.10, function(x) x %in% c(0,1))))])
+es8.melinreg.mval.10.p <- sum(as.numeric(unlist(es8.melinreg.mval.10)[which(unlist(lapply(es8.melinreg.mval.10, function(x) x %in% c(0,1))))])) / length(unlist(es8.melinreg.mval.10)[which(unlist(lapply(es8.melinreg.mval.10, function(x) x %in% c(0,1))))])
+es9.melinreg.mval.10.p <- sum(as.numeric(unlist(es9.melinreg.mval.10)[which(unlist(lapply(es9.melinreg.mval.10, function(x) x %in% c(0,1))))])) / length(unlist(es9.melinreg.mval.10)[which(unlist(lapply(es9.melinreg.mval.10, function(x) x %in% c(0,1))))])
+
+#Correction to es4 in 40 samples
+melinreg.40.mval[4] <- 0.1845537
+
+#20 samples
+melinreg.20.mval <- c(es1.melinreg.mval.20.p,es2.melinreg.mval.20.p,es3.melinreg.mval.20.p,es4.melinreg.mval.20.p,es5.melinreg.mval.20.p,es6.melinreg.mval.20.p,es7.melinreg.mval.20.p,es8.melinreg.mval.20.p,es9.melinreg.mval.20.p)
+#10 samples
+melinreg.10.mval <- c(es1.melinreg.mval.10.p,es2.melinreg.mval.10.p,es3.melinreg.mval.10.p,es4.melinreg.mval.10.p,es5.melinreg.mval.10.p,es6.melinreg.mval.10.p,es7.melinreg.mval.10.p,es8.melinreg.mval.10.p,es9.melinreg.mval.10.p)
+
+```
+
+```{r simulation_plots}
+
+#Age
+#Load in data
+load("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/limma_sim_results.RData")
+load("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/betareg_sim_results.RData")
+load("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/mebetareg_sim_results.RData")
+load("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/melinreg_sim_results.RData")
+
+#Make up the df
+limma_mval <- data.frame(all_samps = limma.all.mval,
+                         hundred_samps = limma.100.mval,
+                         fifty_samps = limma.50.mval,
+                         forty_samps = limma.40.mval,
+                         twenty_samps = limma.20.mval,
+                         ten_samps = limma.10.mval)
+limma_mval <- as.data.frame(t(limma_mval))
+limma_mval$dev0 <- limma_mval[,5]
+limma_mval$dev1 <- rowMeans(limma_mval[,c(4,6)])
+limma_mval$dev2 <- rowMeans(limma_mval[,c(3,7)])
+limma_mval$dev3 <- rowMeans(limma_mval[,c(2,8)])
+limma_mval$dev4 <- rowMeans(limma_mval[,c(1,9)])
+limma_mval <- limma_mval[,-c(1:9)]
+limma_mval$group <- c(729, 100, 50, 40, 20, 10)
+limma_mval$model <- "limma M-values"
+
+limma_bval <- data.frame(all_samps = limma.all.bval,
+                         hundred_samps = limma.100.bval,
+                         fifty_samps = limma.50.bval,
+                         forty_samps = limma.40.bval,
+                         twenty_samps = limma.20.bval,
+                         ten_samps = limma.10.bval)
+limma_bval <- as.data.frame(t(limma_bval))
+limma_bval$dev0 <- limma_bval[,5]
+limma_bval$dev1 <- rowMeans(limma_bval[,c(4,6)])
+limma_bval$dev2 <- rowMeans(limma_bval[,c(3,7)])
+limma_bval$dev3 <- rowMeans(limma_bval[,c(2,8)])
+limma_bval$dev4 <- rowMeans(limma_bval[,c(1,9)])
+limma_bval <- limma_bval[,-c(1:9)]
+limma_bval$group <- c(729, 100, 50, 40, 20, 10)
+limma_bval$model <- "limma B-values"
+
+melinreg_mval <- data.frame(all_samps = melinreg.all.mval,
+                         hundred_samps = melinreg.100.mval,
+                         fifty_samps = melinreg.50.mval,
+                         forty_samps = melinreg.40.mval,
+                         twenty_samps = melinreg.20.mval,
+                         ten_samps = melinreg.10.mval)
+melinreg_mval <- as.data.frame(t(melinreg_mval))
+melinreg_mval$dev0 <- melinreg_mval[,5]
+melinreg_mval$dev1 <- rowMeans(melinreg_mval[,c(4,6)])
+melinreg_mval$dev2 <- rowMeans(melinreg_mval[,c(3,7)])
+melinreg_mval$dev3 <- rowMeans(melinreg_mval[,c(2,8)])
+melinreg_mval$dev4 <- rowMeans(melinreg_mval[,c(1,9)])
+melinreg_mval <- melinreg_mval[,-c(1:9)]
+melinreg_mval$group <- c(729, 100, 50, 40, 20, 10)
+melinreg_mval$model <- "Mixed Effects GLM M-values"
+
+betareg_bval <- data.frame(all_samps = betareg.all.bval,
+                         hundred_samps = betareg.100.bval,
+                         fifty_samps = betareg.50.bval,
+                         forty_samps = betareg.40.bval,
+                         twenty_samps = betareg.20.bval,
+                         ten_samps = betareg.10.bval)
+betareg_bval <- as.data.frame(t(betareg_bval))
+betareg_bval$dev0 <- betareg_bval[,5]
+betareg_bval$dev1 <- rowMeans(betareg_bval[,c(4,6)])
+betareg_bval$dev2 <- rowMeans(betareg_bval[,c(3,7)])
+betareg_bval$dev3 <- rowMeans(betareg_bval[,c(2,8)])
+betareg_bval$dev4 <- rowMeans(betareg_bval[,c(1,9)])
+betareg_bval <- betareg_bval[,-c(1:9)]
+betareg_bval$group <- c(729, 100, 50, 40, 20, 10)
+betareg_bval$model <- "Betareg B-values"
+
+mebetareg_bval <- data.frame(all_samps = mebetareg.all.bval,
+                         hundred_samps = mebetareg.100.bval,
+                         fifty_samps = mebetareg.50.bval,
+                         forty_samps = mebetareg.40.bval,
+                         twenty_samps = mebetareg.20.bval,
+                         ten_samps = mebetareg.10.bval)
+mebetareg_bval <- as.data.frame(t(mebetareg_bval))
+mebetareg_bval$dev0 <- mebetareg_bval[,5]
+mebetareg_bval$dev1 <- rowMeans(mebetareg_bval[,c(4,6)])
+mebetareg_bval$dev2 <- rowMeans(mebetareg_bval[,c(3,7)])
+mebetareg_bval$dev3 <- rowMeans(mebetareg_bval[,c(2,8)])
+mebetareg_bval$dev4 <- rowMeans(mebetareg_bval[,c(1,9)])
+mebetareg_bval <- mebetareg_bval[,-c(1:9)]
+mebetareg_bval$group <- c(729, 100, 50, 40, 20, 10)
+mebetareg_bval$model <- "Mixed Effects Betareg B-values"
+
+#Melt the data frames
+limma_bval.melt <- melt(limma_bval, id.vars = c("group", "model"))
+limma_mval.melt <- melt(limma_mval, id.vars = c("group", "model"))
+melinreg_mval.melt <- melt(melinreg_mval, id.vars = c("group", "model"))
+betareg_bval.melt <- melt(betareg_bval, id.vars = c("group", "model"))
+mebetareg_bval.melt <- melt(mebetareg_bval, id.vars = c("group", "model"))
+
+#Combine the data frames for plotting
+sim_data_plot <- rbind(limma_bval.melt, limma_mval.melt, betareg_bval.melt, melinreg_mval.melt, mebetareg_bval.melt)
+
+simplot <- ggplot(sim_data_plot, aes(x = variable, y = value, color = model)) +
+  geom_point(size = 5.5) +
+  geom_line(aes(group = model), size = 3) +
+  facet_wrap(~group, ncol = 2) +
+  scale_x_discrete(labels = c(0, 0.01, 0.02, 0.03, 0.04)) +
+  scale_color_brewer(palette = "Dark2") +
+  xlab("Effect size") +
+  ylab("Power\n(proportion p-values less than alpha)") +
+  theme_bw(base_size = 48) +
+  theme(
+    legend.title = element_blank()
+  )
+
+#save as svg to modify in inkscape...
+ggsave(plot = simplot, path = "~/Desktop", filename = "simulation_age_plot.svg", width = 28, height = 24, units = "in", dpi = 300)
+
+
+```
+
+```{r betaregdataparse}
+
+load("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/betareg_fit_allprobesHPC.RData")
+br.fit.all.probes.filt <- lapply(br.fit.all.probes, function(x) {
+  #browser()
+  if(length(x) == 7) {
+    x[which(x[,1] == "betareg"),]
+  }})
+
+br.fit.all.probes.filt.df <- ldply(br.fit.all.probes.filt, "rbind")
+
+br.fit.all.probes.filt.df$pval <- as.vector(br.fit.all.probes.filt.df$pval)
+
+br.fit.all.probes.filt.age <- br.fit.all.probes.filt.df %>% filter(term == "age") %>% mutate(fdr = p.adjust(pval, method = "BH"))
+br.fit.all.probes.filt.sex <- br.fit.all.probes.filt.df %>% filter(term == "sexMale") %>% mutate(fdr = p.adjust(pval, method = "BH"))
+
+```
+
+```{r mebetaregdataparse}
+
+#Parse me betareg results
+load("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/glmmtmb_fit_allprobes.RData")
+
+mebr.fit.all.probes.filt <- lapply(mebr.fit.all.probes, function(x) {
+  #browser()
+  if(length(x) == 7) {
+    x[which(x[,1] == "glmmTMB"),]
+  }})
+
+mebr.fit.all.probes.filt.df <- ldply(mebr.fit.all.probes.filt, "rbind")
+mebr.fit.all.probes.filt.df$pval <- as.vector(mebr.fit.all.probes.filt.df$pval)
+
+mebr.fit.all.probes.filt.age <- mebr.fit.all.probes.filt.df %>% filter(term == "age") %>% mutate(fdr = p.adjust(pval, method = "BH"))
+mebr.fit.all.probes.filt.sex <- mebr.fit.all.probes.filt.df %>% filter(term == "sexMale") %>% mutate(fdr = p.adjust(pval, method = "BH"))
+
+```
+
+```{r mebetaregdataparse}
+
+#Parse me betareg results
+load("/Volumes/projects_secondary/bbc/research/ISMB_poster_2018/analysis/glmmtmb_fit_allprobes_gaussian_mval.RData")
+
+melr.mval.fit.all.probes.filt <- lapply(melr.mval.fit.all.probes, function(x) {
+  #browser()
+  if(length(x) == 7) {
+    x[which(x[,1] == "glmmTMB"),]
+  }})
+
+melr.mval.fit.all.probes.filt.df <- ldply(melr.mval.fit.all.probes.filt, "rbind")
+melr.mval.fit.all.probes.filt.df$pval <- as.vector(melr.mval.fit.all.probes.filt.df$pval)
+
+melr.mval.fit.all.probes.filt.age <- melr.mval.fit.all.probes.filt.df %>% filter(term == "age") %>% mutate(fdr = p.adjust(pval, method = "BH"))
+melr.mval.fit.all.probes.filt.sex <- melr.mval.fit.all.probes.filt.df %>% filter(term == "sexMale") %>% mutate(fdr = p.adjust(pval, method = "BH"))
 
 ```
